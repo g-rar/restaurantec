@@ -1,6 +1,7 @@
 package com.example.restauranttec;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class AdapterList extends BaseAdapter {
+
     private static LayoutInflater inflater = null;
     private Context context;
     private ArrayList<String[]> datos;
@@ -37,15 +39,11 @@ public class AdapterList extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        Log.i("on","88");
         final View vista = inflater.inflate(R.layout.element_list,null);
         TextView txtFecha = vista.findViewById(R.id.txt_fecha);
-        TextView txtHora = vista.findViewById(R.id.txt_hora);
-        TextView duration = vista.findViewById(R.id.txt_duration);
-        TextView distancia = vista.findViewById(R.id.txt_distancia);
         txtFecha.setText(datos.get(i)[0]);
-        txtHora.setText(datos.get(i)[1]);
-        distancia.setText("Recorrido: "+datos.get(i)[2]);
-        duration.setText("Duracion: "+datos.get(i)[3]);
         return vista;
     }
+
 }

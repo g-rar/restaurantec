@@ -1,6 +1,8 @@
 package com.example.restauranttec;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -8,22 +10,18 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.Chronometer;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
 
-
-import com.example.restauranttec.ui.main.PlaceholderFragment;
-import com.example.restauranttec.ui.main.SectionsPagerAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,109 +29,91 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
-
-    private AdapterList adapterList;
-    private ListView listViewRestaurant;
-    private ArrayList<String[]>  listRestaurant;
+public class MapActivity {
+/*
+    private int requestAccess;
     private GoogleMap mMap = null;
     private Location locationPrevious;
+    private float distance = 0;
+    private Chronometer cronometro;
+    private ArrayList<Double> coordenadas;
+    private TextView txtDist;
     private int OK_RESULT_CODE = 1;
-    private int requestAccess;
-    public static SupportMapFragment mapFragment;
-    public static FragmentManager fragManager;
-    public static MainActivity main;
-
+    private boolean nuevaCarrera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_map);
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
-
-        //fragManager = getSupportFragmentManager();
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        main = this;
-        PlaceholderFragment.orta(this);
-        if(main == null){
-            Log.i("ver", " nulo rayos");
-        }
-        else{
-            Log.i("ver", " sii rayos");
-        }
-
-        initComponent();
-    }
-
-    private void initComponent(){
-        main = this;
-        /*listRestaurant = new ArrayList<String[]>();
-
-        listViewRestaurant = findViewById(R.id.listHistory);
-        adapterList = new AdapterList(this,listRestaurant);
-        listViewRestaurant.setAdapter(adapterList);
-
-        listViewRestaurant.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-            }
-        });*/
-
-    }
-
-    public void inser(View view){
-        Log.i("on","222");
-        //PlaceholderFragment.newInstance(2);
-
-        String[] p = {"Hola"};
-        PlaceholderFragment.listRestaurant.add(p);
-        PlaceholderFragment.adapterList.notifyDataSetChanged();
-    }
-
-    public static void insere(){
-
-        Log.i("on","222");
-        //PlaceholderFragment.newInstance(2);
-        String[] p = {"Hola"};
-        PlaceholderFragment.listRestaurant.add(p);
-        PlaceholderFragment.listRestaurant.add(p);
-        PlaceholderFragment.listRestaurant.add(p);
-        PlaceholderFragment.adapterList.notifyDataSetChanged();
-
-    }
-    public void o(){
-
+        cronometro = findViewById(R.id.crono);
+        txtDist = findViewById(R.id.txtMDistancia);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        Bundle parametros = this.getIntent().getExtras();
+        if(parametros !=null){
+            Button btn = (Button) findViewById(R.id.btnSalir);
+            btn.setText("Salir");
+            nuevaCarrera = false;
+            txtDist.setText(parametros.getString("Distancia"));
+            cronometro.setText(parametros.getString("Duracion"));
+            double[] coord = parametros.getDoubleArray("Coordenadas");
+            if (coord.length > 20) {
+                LatLng lPrevious = new LatLng(coord[0], coord[1]);
+                mMap.addMarker(new MarkerOptions().position(lPrevious).title("Inicio Recorrido"));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lPrevious, 18.0f));
+                for (int i = 2; i < (coord.length - 1); i += 2) {
+                    LatLng lActual = new LatLng(coord[i], coord[i + 1]);
+                    mMap.addPolyline(new PolylineOptions().add(lPrevious, lActual).width(10).color(Color.RED));
+                    lPrevious = new LatLng(coord[i], coord[i + 1]);
+                }
+            }
+        }
+        else {
+            nuevaCarrera = true;
+            cronometro.setBase(SystemClock.elapsedRealtime());
+            cronometro.start();
+            coordenadas = new ArrayList<Double>();
+        }
+        if(nuevaCarrera)
             getLocation();
     }
 
     public void stop(View view){
+        sendValues();
         finish();
     }
 
+    private void sendValues(){
+        if(nuevaCarrera) {
+            Intent data = new Intent();
+            double coordenadasSend[] = new double[coordenadas.size()];
+            for (int i = 0; i < coordenadas.size(); i++) {
+                coordenadasSend[i] = coordenadas.get(i);
+            }
 
+            data.putExtra("Coordenadas", coordenadasSend);
+            data.putExtra("Duracion", cronometro.getText());
+            data.putExtra("Distancia", txtDist.getText());
+            setResult(OK_RESULT_CODE, data);
+        }
+    }
     private void getLocation(){
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, requestAccess);
+            ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, requestAccess);
         }
         else{
 
@@ -152,9 +132,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.addMarker(new MarkerOptions().position(lActual).title("Inicio Recorrido"));
                 locationPrevious = location;
             }
-
+            coordenadas.add(location.getLatitude());
+            coordenadas.add(location.getLongitude());
             LatLng lPrevious = new LatLng(locationPrevious.getLatitude(), locationPrevious.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lActual,18.0f));
+            double dist = Math.round(location.distanceTo(locationPrevious) * 100d) / 100d;
+            distance += dist;
+            txtDist.setText(Math.round(distance)+" mts");
 
             mMap.addPolyline(new PolylineOptions().add(lPrevious,lActual).width(10).color(Color.RED));
             locationPrevious = location;
@@ -193,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getLocation();
             }
         } else {
-            Toast.makeText(this,"Permiso denegado", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Permiso denegado",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -215,4 +199,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
+
+    @Override
+    public void onBackPressed() {
+        sendValues();
+        super.onBackPressed();
+    }*/
 }
