@@ -108,15 +108,6 @@ public class MapaFragment extends Fragment  implements OnMapReadyCallback {
             LatLng lPrevious = new LatLng(locationPrevious.getLatitude(), locationPrevious.getLongitude());
             //mMap.addMarker( new MarkerOptions().position( lActual ).title( "The Smoothie Shop" ).icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory. ) ) );
             locationPrevious = location;
-            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng point) {
-                    //allPoints.add(point);
-                    mMap.addMarker(new MarkerOptions().position(point).title("Inicio Recorrido"));
-                    mMap.clear();
-                    mMap.addMarker(new MarkerOptions().position(point));
-                }
-            });
 
         }
     }

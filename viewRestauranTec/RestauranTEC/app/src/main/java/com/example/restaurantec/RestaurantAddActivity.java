@@ -44,7 +44,6 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
         spinner = (Spinner) findViewById(R.id.spinner);
         String[] letra = {"Rápida","Mexicana","Casera","D","E"};
         spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, letra));
-        //spinner.getSelectedItem()
         svRestoDetail = findViewById(R.id.scrollAddRestaurant);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapAdd);
         mapFragment.getMapAsync(this);

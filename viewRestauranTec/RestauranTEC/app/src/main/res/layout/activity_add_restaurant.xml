@@ -141,57 +141,27 @@
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:layout_toEndOf="@+id/rGroupPrecio"
-            android:src="@drawable/dollar"/>
+            android:src="@drawable/dollar1"/>
 
         <ImageView
             android:id="@+id/imgDolar2"
-            android:layout_width="32dp"
+            android:layout_width="65dp"
             android:layout_height="32dp"
             android:layout_below="@+id/imgDolar1"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:layout_toEndOf="@+id/rGroupPrecio"
-            android:src="@drawable/dollar"/>
-
-        <ImageView
-            android:id="@+id/imgDolar3"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_below="@+id/imgDolar1"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_toEndOf="@+id/imgDolar2"
-            android:src="@drawable/dollar"/>
+            android:src="@drawable/dollar2"/>
 
         <ImageView
             android:id="@+id/imgDolar4"
-            android:layout_width="32dp"
+            android:layout_width="98dp"
             android:layout_height="32dp"
-            android:layout_below="@+id/imgDolar3"
+            android:layout_below="@+id/imgDolar2"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:layout_toEndOf="@+id/rGroupPrecio"
-            android:src="@drawable/dollar"/>
-
-        <ImageView
-            android:id="@+id/imgDolar5"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_below="@+id/imgDolar3"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_toEndOf="@+id/imgDolar4"
-            android:src="@drawable/dollar"/>
-
-        <ImageView
-            android:id="@+id/imgDolar6"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_below="@+id/imgDolar3"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_toEndOf="@+id/imgDolar5"
-            android:src="@drawable/dollar"/>
+            android:src="@drawable/dollar3"/>
 
         <TextView
             android:id="@+id/textView7"
@@ -233,13 +203,15 @@
             android:layout_marginTop="80dp"
             android:background="@drawable/button_rounded"
             android:text="Agregar"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="30dp"
+            android:layout_alignParentBottom="true"/>
 
         <TextView
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imgDolar6"
+            android:layout_below="@+id/imgDolar4"
             android:layout_marginTop="200dp"
             android:layout_centerHorizontal="true"
             android:textSize="24sp"
