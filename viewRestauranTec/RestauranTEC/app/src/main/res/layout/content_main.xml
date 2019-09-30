@@ -9,11 +9,148 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main"
     android:background="#202732">
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="120dp"
+        tools:ignore="MissingConstraints">
 
+        <TextView
+            android:id="@+id/txt_tipoBusqueda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
+            android:text="Tipo de búsqueda"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"/>
 
+        <Spinner
+            android:id="@+id/spTipoBusqueda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_tipoBusqueda"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp" />
+
+        <EditText
+            android:id="@+id/edTxtName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:ems="10"
+            android:hint="Nombre"
+            android:inputType="textPersonName"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#80FFFFFF" />
+
+        <EditText
+            android:id="@+id/edTxtDist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:ems="10"
+            android:hint="Distancia en Km"
+            android:inputType="number"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#80FFFFFF" />
+
+        <Spinner
+            android:id="@+id/spTipoComida"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_tipoBusqueda"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp" />
+
+        <RadioGroup
+            android:id="@+id/rGroupPrecio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="0dp"
+            android:layout_toStartOf="@+id/imgDolar2">
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </RadioGroup>
+
+        <ImageView
+            android:id="@+id/imgDolar1"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignStart="@+id/imgDolar3"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/dollar1" />
+
+        <ImageView
+            android:id="@+id/imgDolar2"
+            android:layout_width="65dp"
+            android:layout_height="32dp"
+            android:layout_below="@+id/imgDolar1"
+            android:layout_alignStart="@+id/imgDolar1"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/dollar2" />
+
+        <ImageView
+            android:id="@+id/imgDolar3"
+            android:layout_width="98dp"
+            android:layout_height="32dp"
+            android:layout_below="@+id/imgDolar2"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/dollar3" />
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/spTipoBusqueda"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/button_rounded"
+            android:text="Buscar"
+            android:textColor="#FFFFFF" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="120dp">
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"

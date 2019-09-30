@@ -51,11 +51,22 @@
             android:inputType="textPassword"
             android:backgroundTint="@color/colorPrimary"/>
 
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/eTxtPass"
+            android:layout_centerHorizontal="true"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="10dp"
+            android:text="¿Olvidaste tu contraseña?"
+            android:onClick="restore"/>
+
         <Button
             android:id="@+id/btnIniciar"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/eTxtPass"
+            android:layout_below="@+id/textView12"
             android:layout_marginTop="30dp"
             android:layout_centerHorizontal="true"
             android:text="Iniciar Sesión"
@@ -70,7 +81,7 @@
             android:layout_below="@+id/btnIniciar"
             android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true"
-            android:text="Resgistrarse"
+            android:text="Registrarse"
             android:textColor="#FFFFFF"
             android:background="@drawable/button_rounded_border"
             android:onClick="register"/>

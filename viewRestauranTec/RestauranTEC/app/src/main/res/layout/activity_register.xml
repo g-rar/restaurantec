@@ -86,8 +86,7 @@
             android:layout_centerHorizontal="true"
             android:text="Registrar"
             android:textColor="#FFFFFF"
-            android:background="@drawable/button_rounded"
-            android:onClick="login"/>
+            android:background="@drawable/button_rounded" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

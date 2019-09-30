@@ -30,12 +30,26 @@ import android.view.Menu;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private Spinner sp_type;
+    private Spinner sp_typeFood;
+    private TextView txtName;
+    private TextView txtDist;
+    private RadioGroup radioGroupPrecio;
+    private ImageView imgDollar1;
+    private ImageView imgDollar2;
+    private ImageView imgDollar3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +98,63 @@ public class MainActivity extends AppCompatActivity
                 email.setText("Email");
                 name.setText("Usuario");
             }
+        }
+
+        txtName = findViewById(R.id.edTxtName);
+
+        txtDist = findViewById(R.id.edTxtDist);
+
+        radioGroupPrecio = findViewById(R.id.rGroupPrecio);
+
+        imgDollar1 = findViewById(R.id.imgDolar1);
+
+        imgDollar2 = findViewById(R.id.imgDolar2);
+
+        imgDollar3 = findViewById(R.id.imgDolar3);
+
+        sp_typeFood = (Spinner) findViewById(R.id.spTipoComida);
+        String[] foods = {"Rapida","Mexicana","Casera","Italiana","Sandia"};
+        sp_typeFood.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, foods));
+
+        sp_type = (Spinner) findViewById(R.id.spTipoBusqueda);
+        String[] letra = {"Todos","Nombre","Precio","Tipo Comida","Distancia Km"};
+        sp_type.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, letra));
+        sp_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectItem(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void selectItem(int type){
+        txtName.setVisibility(View.INVISIBLE);
+        sp_typeFood.setVisibility(View.INVISIBLE);
+        txtDist.setVisibility(View.INVISIBLE);
+        radioGroupPrecio.setVisibility(View.INVISIBLE);
+        imgDollar1.setVisibility(View.INVISIBLE);
+        imgDollar2.setVisibility(View.INVISIBLE);
+        imgDollar3.setVisibility(View.INVISIBLE);
+        switch (type){
+            case 1:
+                txtName.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                radioGroupPrecio.setVisibility(View.VISIBLE);
+                imgDollar1.setVisibility(View.VISIBLE);
+                imgDollar2.setVisibility(View.VISIBLE);
+                imgDollar3.setVisibility(View.VISIBLE);
+                break;
+            case 3:
+                sp_typeFood.setVisibility(View.VISIBLE);
+                break;
+            case 4:
+                txtDist.setVisibility(View.VISIBLE);
         }
     }
 
@@ -149,24 +220,5 @@ public class MainActivity extends AppCompatActivity
         String[] lista = {"Adrian"};
         ListFragment.listRestaurant.add(lista);
         ListFragment.adapterList.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            hideSystemUI();
-        }
-    }
-
-    private void hideSystemUI() {
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 }

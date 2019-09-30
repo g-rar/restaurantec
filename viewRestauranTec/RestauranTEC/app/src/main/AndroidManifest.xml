@@ -47,6 +47,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LoginActivity" />
         </activity>
+        <activity android:name=".RestoreActivity"
+            android:parentActivityName=".LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
+        </activity>
         <activity android:name=".RestaurantActivity"
             android:parentActivityName=".MainActivity">
             <meta-data

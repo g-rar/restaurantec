@@ -85,6 +85,11 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void restore(View view){
+        Intent intent = new Intent(this, RestoreActivity.class);
+        startActivity(intent);
+    }
+
     public void onClickFacebookButton(View view) {
         actionFacebookButton();
     }

@@ -154,7 +154,7 @@
             android:src="@drawable/dollar2"/>
 
         <ImageView
-            android:id="@+id/imgDolar4"
+            android:id="@+id/imgDolar3"
             android:layout_width="98dp"
             android:layout_height="32dp"
             android:layout_below="@+id/imgDolar2"
