@@ -27,15 +27,28 @@
             android:text="TextView"
             android:textSize="36sp" />
 
+        <RatingBar
+            android:id="@+id/ratingRestaurantP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView2"
+            android:layout_centerHorizontal="true"
+            android:isIndicator="true"
+            android:layout_marginTop="0dp"
+            android:numStars="5"
+            android:scaleX=".7"
+            android:scaleY=".7"
+            android:stepSize=".5" />
+
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView2"
+            android:layout_below="@+id/ratingRestaurantP"
             android:layout_alignParentStart="true"
             android:layout_marginStart="5dp"
             android:layout_marginTop="30dp"
-            android:text="Calificaión"
+            android:text="Calificar"
             android:textSize="20sp" />
 
         <RatingBar
@@ -55,7 +68,7 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView2"
+            android:layout_below="@+id/ratingRestaurantP"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="30dp"
             android:layout_marginEnd="20dp"

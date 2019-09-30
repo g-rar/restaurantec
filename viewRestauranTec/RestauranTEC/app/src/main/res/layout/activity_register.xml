@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -12,27 +9,56 @@
         android:background="#202732">
 
         <TextView
-            android:id="@+id/txtLogin"
+            android:id="@+id/txtRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
-            android:text="Login"
+            android:text="Registro"
             android:textColor="#FFFFFF"
             android:textSize="36sp" />
 
         <EditText
-            android:id="@+id/edTxtUser"
+            android:id="@+id/edTxtName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Nombre"
+            android:layout_marginTop="100dp"
+            android:textColorHint="#80FFFFFF"
+            android:textColor="#FFFFFF"
+            android:layout_below="@+id/txtRegister"
+            android:layout_centerHorizontal="true"
+            android:backgroundTint="@color/colorPrimary"
+            />
+
+        <EditText
+            android:id="@+id/eTxtAp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edTxtName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:textColorHint="#80FFFFFF"
+            android:textColor="#FFFFFF"
+            android:hint="Apellidos"
+            android:inputType="textPersonName"
+            android:backgroundTint="@color/colorPrimary"/>
+
+        <EditText
+            android:id="@+id/edTxtEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
             android:hint="Email"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="20dp"
             android:textColorHint="#80FFFFFF"
             android:textColor="#FFFFFF"
-            android:layout_below="@+id/txtLogin"
+            android:layout_below="@+id/eTxtAp"
             android:layout_centerHorizontal="true"
             android:backgroundTint="@color/colorPrimary"
             />
@@ -41,7 +67,7 @@
             android:id="@+id/eTxtPass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/edTxtUser"
+            android:layout_below="@+id/edTxtEmail"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:ems="10"
@@ -52,48 +78,16 @@
             android:backgroundTint="@color/colorPrimary"/>
 
         <Button
-            android:id="@+id/btnIniciar"
+            android:id="@+id/btnRegister"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/eTxtPass"
             android:layout_marginTop="30dp"
             android:layout_centerHorizontal="true"
-            android:text="Iniciar Sesión"
+            android:text="Registrar"
             android:textColor="#FFFFFF"
             android:background="@drawable/button_rounded"
             android:onClick="login"/>
-
-        <Button
-            android:id="@+id/btnRegistrar"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnIniciar"
-            android:layout_marginTop="10dp"
-            android:layout_centerHorizontal="true"
-            android:text="Resgistrarse"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/button_rounded_border"
-            android:onClick="register"/>
-
-        <ImageView
-            android:id="@+id/imgFacebook"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:srcCompat="@drawable/facebook"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/btnRegistrar"
-            android:layout_marginTop="30dp"
-            android:onClick="onClickFacebookButton"
-            />
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

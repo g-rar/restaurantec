@@ -80,6 +80,11 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void register(View view){
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
+
     public void onClickFacebookButton(View view) {
         actionFacebookButton();
     }
