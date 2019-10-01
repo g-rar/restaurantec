@@ -1,5 +1,6 @@
 package com.example.restaurantec;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -163,7 +164,6 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
 
     public void addPictureRestaurant(View view){
         final CharSequence[] options = {"Tomar foto", "Elegir de galeria", "Cancelar"};
-        Toast.makeText(this,"si ",Toast.LENGTH_LONG).show();
         final AlertDialog.Builder builder = new AlertDialog.Builder(RestaurantActivity.this);
         builder.setTitle("Elige una opción");
         builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -192,24 +192,20 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private boolean myRequestStoragePermission(){
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
+        }
 
         if((checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
-                (checkSelfPermission(CAMERA) == PackageManager.PERMISSION_GRANTED))
+                (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)) {
             return true;
+        }
 
-        if((shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) || (shouldShowRequestPermissionRationale(CAMERA))){
-            Snackbar.make(mRlView, "Los permisos son necesarios para poder usar la aplicación",
-                    Snackbar.LENGTH_INDEFINITE).setAction(android.R.string.ok, new View.OnClickListener() {
-                @TargetApi(Build.VERSION_CODES.M)
-                @Override
-                public void onClick(View v) {
-                    requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, MY_PERMISSIONS);
-                }
-            });
+        if((shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) || (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA))){
+            requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MY_PERMISSIONS);
         }else{
-            requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, MY_PERMISSIONS);
+            requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MY_PERMISSIONS);
         }
 
         return false;
