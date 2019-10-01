@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".RestaurantActivity">
 
     <ScrollView
         android:id="@+id/scrollRestaurant"
@@ -15,6 +15,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/relativeRestaurant"
         android:background="#202732">
 
         <TextView
@@ -205,6 +206,19 @@
             android:layout_marginStart="5dp"
             android:layout_marginBottom="30dp"
             android:layout_alignParentBottom="true"/>
+
+        <Button
+            android:id="@+id/btnImage"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView8"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/button_rounded"
+            android:onClick="addPictureRestaurant"
+            android:text="Agregar imagenes"
+            android:textColor="#FFFFFF" />
     </RelativeLayout>
     </ScrollView>
 

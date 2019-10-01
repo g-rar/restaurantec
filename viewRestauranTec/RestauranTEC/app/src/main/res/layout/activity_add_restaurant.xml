@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#202732"
+        android:id="@+id/relativeAdd"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp">
 
@@ -207,12 +208,24 @@
             android:layout_marginBottom="30dp"
             android:layout_alignParentBottom="true"/>
 
+        <Button
+            android:id="@+id/btnImage"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgDolar3"
+            android:layout_marginTop="50dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_rounded"
+            android:onClick="addPicture"
+            android:text="Agregar imagenes"
+            android:textColor="#FFFFFF" />
+
         <TextView
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imgDolar4"
-            android:layout_marginTop="200dp"
+            android:layout_below="@+id/btnImage"
+            android:layout_marginTop="50dp"
             android:layout_centerHorizontal="true"
             android:textSize="24sp"
             android:text="Ubicación" />

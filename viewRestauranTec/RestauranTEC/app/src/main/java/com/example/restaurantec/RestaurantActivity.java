@@ -1,22 +1,33 @@
 package com.example.restaurantec;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.Rating;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -26,8 +37,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.Manifest.permission_group.CAMERA;
 
 public class RestaurantActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -39,6 +54,10 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     public AdapterComentList adapterList;
     private ListView listComentRestaurant;
     private ArrayList<String[]> listComent;
+    private final int MY_PERMISSIONS = 100;
+    private final int PHOTO_CODE = 200;
+    private final int SELECT_PICTURE = 300;
+    private RelativeLayout mRlView;
 
 
     @Override
@@ -71,6 +90,10 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         String[] lista = {"Adrian","20/01/1998","Este comentario es de prueba y es que no sabia que poner pero bueno yo que se me gusta el melon."};
         listComent.add(lista);
         adapterList.notifyDataSetChanged();
+
+        mRlView = findViewById(R.id.relativeRestaurant);
+
+        myRequestStoragePermission();
     }
 
     @Override
@@ -138,6 +161,59 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         }
     };
 
+    public void addPictureRestaurant(View view){
+        final CharSequence[] options = {"Tomar foto", "Elegir de galeria", "Cancelar"};
+        Toast.makeText(this,"si ",Toast.LENGTH_LONG).show();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(RestaurantActivity.this);
+        builder.setTitle("Elige una opción");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(options[i] == "Tomar foto"){
+                    openCamera();
+                }
+                else if(options[i] == "Elegir de galeria"){
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    startActivityForResult(intent.createChooser(intent,"Selecciona la app:" ), SELECT_PICTURE);
+                }
+                else if (options[i] == "Cancelar"){
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void openCamera(){
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, PHOTO_CODE);
+    }
+
+    private boolean myRequestStoragePermission(){
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            return true;
+
+        if((checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
+                (checkSelfPermission(CAMERA) == PackageManager.PERMISSION_GRANTED))
+            return true;
+
+        if((shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) || (shouldShowRequestPermissionRationale(CAMERA))){
+            Snackbar.make(mRlView, "Los permisos son necesarios para poder usar la aplicación",
+                    Snackbar.LENGTH_INDEFINITE).setAction(android.R.string.ok, new View.OnClickListener() {
+                @TargetApi(Build.VERSION_CODES.M)
+                @Override
+                public void onClick(View v) {
+                    requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, MY_PERMISSIONS);
+                }
+            });
+        }else{
+            requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, MY_PERMISSIONS);
+        }
+
+        return false;
+    }
 
 
     @Override
@@ -150,6 +226,57 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         } else {
             Toast.makeText(this,"Permiso denegado", Toast.LENGTH_LONG).show();
         }
+        if(requestCode == MY_PERMISSIONS){
+            if(grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(RestaurantActivity.this, "Permisos aceptados", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            showExplanation();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            switch (requestCode){
+                case PHOTO_CODE:
+
+
+
+                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                    // mSetImage.setImageBitmap(bitmap);
+                    break;
+                case SELECT_PICTURE:
+                    Uri path = data.getData();
+                    //mSetImage.setImageURI(path);
+                    break;
+
+            }
+        }
+    }
+
+    private void showExplanation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RestaurantActivity.this);
+        builder.setTitle("Permisos denegados");
+        builder.setMessage("Para usar las funciones de la app necesitas aceptar los permisos");
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
     }
 
     @Override

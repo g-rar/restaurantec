@@ -221,4 +221,5 @@ public class MainActivity extends AppCompatActivity
         ListFragment.listRestaurant.add(lista);
         ListFragment.adapterList.notifyDataSetChanged();
     }
+
 }
