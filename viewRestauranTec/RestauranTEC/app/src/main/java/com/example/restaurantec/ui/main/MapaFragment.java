@@ -35,7 +35,7 @@ public class MapaFragment extends Fragment  implements OnMapReadyCallback {
 
     private String mParam1;
     private String mParam2;
-    private GoogleMap mMap = null;
+    public static GoogleMap mMap = null;
     private Location locationPrevious;
     private int OK_RESULT_CODE = 1;
     private int requestAccess;
@@ -100,15 +100,22 @@ public class MapaFragment extends Fragment  implements OnMapReadyCallback {
 
             LatLng lActual = new LatLng(location.getLatitude(), location.getLongitude());
             if(locationPrevious == null){
-                //mMap.addMarker(new MarkerOptions().position(lActual).title("Inicio Recorrido"));
                 locationPrevious = location;
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lActual,18.0f));
             }
 
             LatLng lPrevious = new LatLng(locationPrevious.getLatitude(), locationPrevious.getLongitude());
-            //mMap.addMarker( new MarkerOptions().position( lActual ).title( "The Smoothie Shop" ).icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory. ) ) );
+
             locationPrevious = location;
 
+        }
+    }
+
+    public static void addPointers(){
+        mMap.clear();
+        for (int i = 0; i < MainActivity.listRestarantDirFilter.size(); i++) {
+            LatLng point = new LatLng(MainActivity.listRestarantDirFilter.get(i)[0], MainActivity.listRestarantDirFilter.get(i)[1]);
+            mMap.addMarker(new MarkerOptions().position(point)).setTitle(MainActivity.listRestaurantInfoFilter.get(i)[0]);
         }
     }
 

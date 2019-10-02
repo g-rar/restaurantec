@@ -2,7 +2,9 @@ package com.example.restaurantec;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,9 +30,11 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -43,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText txtPass;
     int request_code = 1;
     private CallbackManager callbackManager;
+    private ArrayList<String[]> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +83,8 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this,error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-
+        users = new ArrayList<String[]>();
+        requestData("https://serene-anchorage-77141.herokuapp.com/usuarios.json");
     }
 
     private void componentEnabled(boolean enabled){
@@ -109,10 +115,21 @@ public class LoginActivity extends AppCompatActivity {
 
         if(!isNotComp) {
             componentEnabled(false);
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("facebook", "False");
-            intent.putExtra("email",email);
-            startActivity(intent);
+            boolean isLogin = false;
+            for(int i = 0; i < users.size(); i++){
+                if(users.get(i)[1].equalsIgnoreCase(email) && users.get(i)[2].equals(password)){
+                    isLogin = true;
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra("facebook", "False");
+                    intent.putExtra("email",email);
+                    intent.putExtra("name",users.get(i)[0]);
+                    startActivity(intent);
+                }
+            }
+            if(!isLogin) {
+                Toast.makeText(this, "El usuario o contraseña son incorrectos.", Toast.LENGTH_LONG).show();
+                componentEnabled(true);
+            }
         }
         else
             Toast.makeText(this,"Complete todo lo solicitado",Toast.LENGTH_LONG).show();
@@ -173,14 +190,11 @@ public class LoginActivity extends AppCompatActivity {
                     String email = object.getString("email");
                     String id = object.getString("id");
                     String image_url = "https://graph.facebook.com/"+id+ "/picture?type=normal";
-                    //txtEmail.setText(email);
-                    //txtName.setText(first_name +" "+last_name);
                     RequestOptions requestOptions = new RequestOptions();
                     requestOptions.dontAnimate();
                     intent.putExtra("name", first_name+" "+last_name);
                     intent.putExtra("email",email);
                     intent.putExtra("facebook","True");
-                    //Glide.with(LoginActivity.this).load(image_url).into(circleImageView);
                     intent.putExtra("image", image_url);
                     startActivityForResult(intent, request_code);
 
@@ -229,5 +243,45 @@ public class LoginActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
+    private void requestData(String url) {
+        RequestPackage requestPackage = new RequestPackage();
+        requestPackage.setMethod("GET");
+        requestPackage.setUrl(url);
 
+        Downloader downloader = new Downloader(); //Instantiation of the Async task
+        //that’s defined below
+
+        downloader.execute(requestPackage);
+    }
+
+    private class Downloader extends AsyncTask<RequestPackage, String, String> {
+        @Override
+        protected String doInBackground(RequestPackage... params) {
+            return HttpManager.getData(params[0]);
+        }
+
+        //The String that is returned in the doInBackground() method is sent to the
+        // onPostExecute() method below. The String should contain JSON data.
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                //We need to convert the string in result to a JSONObject
+                JSONObject jsonObject = new JSONObject(result);
+                JSONArray userJsonArray = jsonObject.getJSONArray("usuarios");
+                for(int i = 0; i < userJsonArray.length(); i++){
+                    String userC[] = new String[3];
+                    userC[0] = userJsonArray.getJSONObject(i).getString("nombreusuario") + " "+
+                            userJsonArray.getJSONObject(i).getString("apellidousuario");
+                    userC[1] = userJsonArray.getJSONObject(i).getString("correousuario");
+                    userC[2] = userJsonArray.getJSONObject(i).getString("contrasenausuario");
+                    users.add(userC);
+                }
+
+                Log.i("GRARDEBUG", "onPostExecute: " + jsonObject.getJSONArray("usuarios").toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 }

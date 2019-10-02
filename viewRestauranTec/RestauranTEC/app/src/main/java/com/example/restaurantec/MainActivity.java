@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
@@ -11,6 +12,7 @@ import com.example.restaurantec.ui.main.ListFragment;
 import com.example.restaurantec.ui.main.MapaFragment;
 import com.example.restaurantec.ui.main.SectionsPagerAdapter;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.core.view.GravityCompat;
@@ -38,6 +40,10 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -151,6 +157,11 @@ public class MainActivity extends AppCompatActivity
         listRestaurantImageFilter = new ArrayList<ArrayList<Bitmap>>();
         listRestaurantInfoFilter = new ArrayList<String[]>();
         listRestarantDirFilter = new ArrayList<double[]>();
+
+        requestData("https://serene-anchorage-77141.herokuapp.com/usuarios/2.json");
+        requestData("https://serene-anchorage-77141.herokuapp.com/restaurantes.json");
+        requestData("https://serene-anchorage-77141.herokuapp.com/restaurantes/PintoHouse.json");
+        requestData("https://serene-anchorage-77141.herokuapp.com/comentarios.json");
     }
 
     private void selectItem(int type){
@@ -235,6 +246,7 @@ public class MainActivity extends AppCompatActivity
             ListFragment.listRestaurant.add(list);
         }
         ListFragment.adapterList.notifyDataSetChanged();
+        MapaFragment.addPointers();
     }
 
     public void search(View view) {
@@ -267,14 +279,14 @@ public class MainActivity extends AppCompatActivity
                 int selectRadio = radioGroupPrecio.getCheckedRadioButtonId();
                 if(selectRadio != -1){
                     String precio = "";
-                    switch (select) {
-                        case R.id.rbutton1:
+                    switch (selectRadio) {
+                        case R.id.radioButton1:
                             precio = "0";
                             break;
-                        case R.id.rbutton2:
+                        case R.id.radioButton2:
                             precio = "1";
                             break;
-                        case R.id.rbutton3:
+                        case R.id.radioButton3:
                             precio = "2";
                             break;
                     }
@@ -284,7 +296,7 @@ public class MainActivity extends AppCompatActivity
                     listRestarantDirFilter.clear();
                     ListFragment.listRestaurant.clear();
                     for(int i = 0; i < listRestaurantInfo.size(); i++){
-                        if(listRestaurantInfo.get(i)[4] == precio){
+                        if(listRestaurantInfo.get(i)[4].equalsIgnoreCase(precio)){
                             listRestaurantInfoFilter.add(listRestaurantInfo.get(i));
                             listRestaurantImageFilter.add(listRestaurantImage.get(i));
                             listRestarantDirFilter.add(listRestarantDir.get(i));
@@ -316,5 +328,42 @@ public class MainActivity extends AppCompatActivity
                 txtDist.setVisibility(View.VISIBLE);
         }
         ListFragment.adapterList.notifyDataSetChanged();
+        MapaFragment.addPointers();
+    }
+
+    private void requestData(String url) {
+        RequestPackage requestPackage = new RequestPackage();
+        requestPackage.setMethod("GET");
+        requestPackage.setUrl(url);
+
+        Downloader downloader = new Downloader(); //Instantiation of the Async task
+        //that’s defined below
+
+        downloader.execute(requestPackage);
+    }
+
+    private class Downloader extends AsyncTask<RequestPackage, String, String> {
+        @Override
+        protected String doInBackground(RequestPackage... params) {
+            return HttpManager.getData(params[0]);
+        }
+
+        //The String that is returned in the doInBackground() method is sent to the
+        // onPostExecute() method below. The String should contain JSON data.
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                //We need to convert the string in result to a JSONObject
+                JSONObject jsonObject = new JSONObject(result);
+
+                //The “ask” value below is a field in the JSON Object that was
+                //retrieved from the BitcoinAverage API. It contains the current
+                //bitcoin price
+                Log.i("GRARDEBUG", "onPostExecute: " + jsonObject.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }
