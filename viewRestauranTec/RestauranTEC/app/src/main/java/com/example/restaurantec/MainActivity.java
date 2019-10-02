@@ -208,11 +208,13 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
-            Intent data = new Intent();
-            data.setData(Uri.parse("exit"));
-            setResult(RESULT_OK, data);
-            finish();
-
+            //LoginActivity.loginButton.performClick();
+            //if(!LoginActivity.cancel()) {
+                Intent data = new Intent();
+                data.setData(Uri.parse("exit"));
+                setResult(RESULT_OK, data);
+                finish();
+            //}
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
