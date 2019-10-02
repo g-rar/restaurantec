@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +24,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -33,11 +37,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private LoginButton loginButton;
+    public LoginButton loginButton;
     private CircleImageView circleImageView;
-    private TextView txtName,txtEmail;
+    private EditText txtEmail;
+    private EditText txtPass;
     int request_code = 1;
-
     private CallbackManager callbackManager;
 
     @Override
@@ -53,18 +57,20 @@ public class LoginActivity extends AppCompatActivity {
 
         callbackManager = CallbackManager.Factory.create();
         loginButton.setReadPermissions(Arrays.asList("email","public_profile"));
+        componentEnabled(false);
         checkLoginStatus();
+
+        txtEmail = findViewById(R.id.edTxtUser);
+        txtPass = findViewById(R.id.eTxtPass);
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult)
             {
-                Toast.makeText(LoginActivity.this,"fun se logro", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onCancel() {
-
             }
 
             @Override
@@ -72,12 +78,44 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this,error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+
+    }
+
+    private void componentEnabled(boolean enabled){
+        Button btnIniciar = findViewById(R.id.btnIniciar);
+        Button btnRegister = findViewById(R.id.btnRegistrar);
+        ImageView imgFacebook = findViewById(R.id.imgFacebook);
+        EditText edEmail = findViewById(R.id.edTxtUser);
+        EditText edPass = findViewById(R.id.eTxtPass);
+        TextView txtRestore = findViewById(R.id.txtRestore);
+        ImageView imgLoad = findViewById(R.id.imgLoad);
+        btnIniciar.setEnabled(enabled);
+        btnRegister.setEnabled(enabled);
+        imgFacebook.setEnabled(enabled);
+        edEmail.setEnabled(enabled);
+        edPass.setEnabled(enabled);
+        txtRestore.setEnabled(enabled);
+        if(enabled)
+            imgLoad.setVisibility(View.INVISIBLE);
+        else
+            imgLoad.setVisibility(View.VISIBLE);
     }
 
     public void login(View view){
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("facebook","False");
-        startActivity(intent);
+        String email = txtEmail.getText().toString();
+        String password = txtPass.getText().toString();
+
+        boolean isNotComp = email.isEmpty() || password.isEmpty();
+
+        if(!isNotComp) {
+            componentEnabled(false);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("facebook", "False");
+            intent.putExtra("email",email);
+            startActivity(intent);
+        }
+        else
+            Toast.makeText(this,"Complete todo lo solicitado",Toast.LENGTH_LONG).show();
     }
 
     public void register(View view){
@@ -91,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onClickFacebookButton(View view) {
+        componentEnabled(false);
         actionFacebookButton();
     }
 
@@ -102,7 +141,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         callbackManager.onActivityResult(requestCode,resultCode,data);
         if ((requestCode == request_code) && (resultCode == RESULT_OK)){
-            actionFacebookButton();
+            LoginManager.getInstance().logOut();
+            componentEnabled(true);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -113,15 +153,10 @@ public class LoginActivity extends AppCompatActivity {
         {
             if(currentAccessToken==null)
             {
-                Toast.makeText(LoginActivity.this,"que se logro", Toast.LENGTH_LONG).show();
-                //txtName.setText("");
-                //txtEmail.setText("");
-                //circleImageView.setImageResource(0);
-                Toast.makeText(LoginActivity.this,"User Logged out", Toast.LENGTH_LONG).show();
+                componentEnabled(true);
             }
             else
                 loadUserProfile(currentAccessToken);
-            Toast.makeText(LoginActivity.this,"lo se logro", Toast.LENGTH_LONG).show();
         }
     };
 
@@ -138,7 +173,6 @@ public class LoginActivity extends AppCompatActivity {
                     String email = object.getString("email");
                     String id = object.getString("id");
                     String image_url = "https://graph.facebook.com/"+id+ "/picture?type=normal";
-                    Toast.makeText(LoginActivity.this,"si se logro", Toast.LENGTH_LONG).show();
                     //txtEmail.setText(email);
                     //txtName.setText(first_name +" "+last_name);
                     RequestOptions requestOptions = new RequestOptions();
@@ -171,6 +205,9 @@ public class LoginActivity extends AppCompatActivity {
         if(AccessToken.getCurrentAccessToken()!=null)
         {
             loadUserProfile(AccessToken.getCurrentAccessToken());
+        }
+        else {
+            componentEnabled(true);
         }
     }
 

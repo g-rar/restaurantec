@@ -151,7 +151,8 @@
             android:layout_marginStart="10dp"
             android:background="@drawable/button_rounded"
             android:text="Buscar"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:onClick="search"/>
 
     </RelativeLayout>
     <RelativeLayout

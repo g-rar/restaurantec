@@ -1,6 +1,7 @@
 package com.example.restaurantec;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.icu.text.SimpleDateFormat;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,15 +23,19 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -39,10 +45,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.Manifest.permission_group.CAMERA;
@@ -62,7 +71,11 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     private final int SELECT_PICTURE = 300;
     private RelativeLayout mRlView;
     private ArrayList<Bitmap> images;
+    private String nameS;
+    private LatLng locationRest;
+    private int pos;
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -84,18 +97,52 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapRestaurant);
         mapFragment.getMapAsync(this);
+        if(getIntent() != null) {
+            pos = getIntent().getIntExtra("listPos",0);
+            TextView name = findViewById(R.id.txtName);
+            name.setText(MainActivity.listRestaurantInfoFilter.get(pos)[0]);
+            nameS = MainActivity.listRestaurantInfoFilter.get(pos)[0];
 
+            TextView food = findViewById(R.id.txtTypeFood);
+            food.setText(MainActivity.listRestaurantInfoFilter.get(pos)[3]);
+
+            TextView phone = findViewById(R.id.txtPhone);
+            phone.setText(MainActivity.listRestaurantInfoFilter.get(pos)[1]);
+
+            TextView horario = findViewById(R.id.txtHor);
+            horario.setText(MainActivity.listRestaurantInfoFilter.get(pos)[2]);
+
+            RatingBar rating = findViewById(R.id.ratingRestaurantP);
+            rating.setRating(Float.parseFloat(MainActivity.listRestaurantInfoFilter.get(pos)[5]));
+
+            ImageView imgPrecio = findViewById(R.id.imgPrecio);
+
+            locationRest = new LatLng(MainActivity.listRestarantDirFilter.get(pos)[0], MainActivity.listRestarantDirFilter.get(pos)[1]);
+
+            switch(MainActivity.listRestaurantInfoFilter.get(pos)[4])
+            {
+                case "0":
+                    imgPrecio.setImageResource(R.drawable.dollar1);
+                    break;
+                case "1":
+                    imgPrecio.setImageResource(R.drawable.dollar2);
+                    break;
+                case "2":
+                    imgPrecio.setImageResource(R.drawable.dollar3);
+                    break;
+            }
+            images = MainActivity.listRestaurantImageFilter.get(pos);
+        }
         listComentRestaurant = findViewById(R.id.listComentRest);
 
         listComent = new ArrayList<String[]>();
         adapterList = new AdapterComentList(this, listComent);
         listComentRestaurant.setAdapter(adapterList);
-        String[] lista = {"Adrian","20/01/1998","Este comentario es de prueba y es que no sabia que poner pero bueno yo que se me gusta el melon."};
-        listComent.add(lista);
-        adapterList.notifyDataSetChanged();
+        //String[] lista = {"Adrian","20/01/1998","Este comentario es de prueba y es que no sabia que poner pero bueno yo que se me gusta el melon."};
+        //listComent.add(lista);
+       // adapterList.notifyDataSetChanged();
 
         mRlView = findViewById(R.id.relativeRestaurant);
-        images = new ArrayList<Bitmap>();
         myRequestStoragePermission();
     }
 
@@ -124,13 +171,10 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
 
             LatLng lActual = new LatLng(location.getLatitude(), location.getLongitude());
             if(locationPrevious == null){
-                //mMap.addMarker(new MarkerOptions().position(lActual).title("Inicio Recorrido"));
+                mMap.addMarker(new MarkerOptions().position(locationRest)).setTitle(nameS);
                 locationPrevious = location;
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lActual,18.0f));
             }
-
-            LatLng lPrevious = new LatLng(locationPrevious.getLatitude(), locationPrevious.getLongitude());
-            //mMap.addMarker( new MarkerOptions().position( lActual ).title( "The Smoothie Shop" ).icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory. ) ) );
             locationPrevious = location;
             mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
                 @Override
@@ -165,8 +209,8 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     };
 
     public void abrir(View view){
-        MainActivity.listRestaurantImage.add(images);
         Intent intent = new Intent(this,ImageActivity.class);
+        intent.putExtra("posList",pos);
         startActivity(intent);
     }
 
@@ -192,6 +236,22 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         });
         AlertDialog alert = builder.create();
         alert.show();
+        for(int i = 0; i < MainActivity.listRestaurantImage.size(); i++){
+            boolean isElement = MainActivity.listRestaurantInfo.get(i)[0] == MainActivity.listRestaurantInfoFilter.get(pos)[0]
+                    && MainActivity.listRestaurantInfo.get(i)[1] == MainActivity.listRestaurantInfoFilter.get(pos)[1]
+                    && MainActivity.listRestaurantInfo.get(i)[2] == MainActivity.listRestaurantInfoFilter.get(pos)[2]
+                    && MainActivity.listRestaurantInfo.get(i)[3] == MainActivity.listRestaurantInfoFilter.get(pos)[3]
+                    && MainActivity.listRestaurantInfo.get(i)[4] == MainActivity.listRestaurantInfoFilter.get(pos)[4]
+                    && MainActivity.listRestaurantInfo.get(i)[5] == MainActivity.listRestaurantInfoFilter.get(pos)[5];
+            if(isElement){
+                MainActivity.listRestaurantImage.remove(i);
+                MainActivity.listRestaurantImage.add(i,images);
+                break;
+            }
+
+        }
+        MainActivity.listRestaurantImageFilter.remove(pos);
+        MainActivity.listRestaurantImageFilter.add(pos,images);
     }
 
     private void openCamera(){
@@ -301,5 +361,19 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void addComent(View view) {
+        EditText coment = findViewById(R.id.edTxtComent);
+        String comentS = coment.getText().toString();
+        if(!comentS.isEmpty()){
+            String currentDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+            String[] lista = {MainActivity.user[1],currentDate,comentS};
+            listComent.add(lista);
+            adapterList.notifyDataSetChanged();
+        }
+        else
+            Toast.makeText(this,"Escriba el comentario", Toast.LENGTH_LONG).show();
     }
 }

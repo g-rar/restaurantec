@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -54,6 +55,13 @@ public class MainActivity extends AppCompatActivity
     private ImageView imgDollar2;
     private ImageView imgDollar3;
     public static ArrayList<ArrayList<Bitmap>> listRestaurantImage;
+    public static ArrayList<String[]> listRestaurantInfo;
+    public static ArrayList<double[]> listRestarantDir;
+
+    public static ArrayList<ArrayList<Bitmap>> listRestaurantImageFilter;
+    public static ArrayList<String[]> listRestaurantInfoFilter;
+    public static ArrayList<double[]> listRestarantDirFilter;
+    public static String[] user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +71,6 @@ public class MainActivity extends AppCompatActivity
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,17 +98,19 @@ public class MainActivity extends AppCompatActivity
 
         if(getIntent() != null) {
             String isFacebook = getIntent().getStringExtra("facebook");
+            user = new String[2];
+            user[0] = getIntent().getStringExtra("email");
+            email.setText(user[0]);
             if(isFacebook.equalsIgnoreCase("True")) {
                 String image_url = getIntent().getStringExtra("image");
                 Glide.with(MainActivity.this).load(image_url).into(circleImageView);
-                email.setText(getIntent().getStringExtra("email"));
-                name.setText(getIntent().getStringExtra("name"));
+                user[1] = getIntent().getStringExtra("name");
             }
             else {
                 Glide.with(MainActivity.this).load("https://image.flaticon.com/icons/svg/149/149071").into(circleImageView);
-                email.setText("Email");
-                name.setText("Usuario");
+                user[1] = "Adrian";
             }
+            name.setText(user[1]);
         }
 
         txtName = findViewById(R.id.edTxtName);
@@ -136,6 +145,12 @@ public class MainActivity extends AppCompatActivity
         });
 
         listRestaurantImage = new ArrayList<ArrayList<Bitmap>>();
+        listRestaurantInfo = new ArrayList<String[]>();
+        listRestarantDir = new ArrayList<double[]>();
+
+        listRestaurantImageFilter = new ArrayList<ArrayList<Bitmap>>();
+        listRestaurantInfoFilter = new ArrayList<String[]>();
+        listRestarantDirFilter = new ArrayList<double[]>();
     }
 
     private void selectItem(int type){
@@ -192,27 +207,17 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            // Handle the camera action
+        if (id == R.id.add_retaurant) {
             Intent intent = new Intent(this, RestaurantAddActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_tools) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-            Intent data = new Intent();
-            data.setData(Uri.parse("exit"));
-            setResult(RESULT_OK, data);
-            finish();
-
+        } else if (id == R.id.nav_exit) {
+                Intent data = new Intent();
+                data.setData(Uri.parse("exit"));
+                setResult(RESULT_OK, data);
+                finish();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -220,12 +225,96 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
-
-    public void agregar(View view){
-        String[] lista = {"Adrian"};
-        ListFragment.listRestaurant.add(lista);
+    public static void reset(){
+        listRestaurantImageFilter = (ArrayList<ArrayList<Bitmap>>) listRestaurantImage.clone();
+        listRestaurantInfoFilter = (ArrayList<String[]>) listRestaurantInfo.clone();
+        listRestarantDirFilter = (ArrayList<double[]>) listRestarantDir.clone();
+        ListFragment.listRestaurant.clear();
+        for(int i = 0; i < listRestaurantInfoFilter.size(); i++){
+            String[] list = {listRestaurantInfoFilter.get(i)[0],listRestaurantInfoFilter.get(i)[5],listRestaurantInfoFilter.get(i)[3]};
+            ListFragment.listRestaurant.add(list);
+        }
         ListFragment.adapterList.notifyDataSetChanged();
     }
 
+    public void search(View view) {
+        int select = sp_type.getSelectedItemPosition();
+        switch (select){
+            case 0:
+                reset();
+                break;
+            case 1:
+                String name = txtName.getText().toString();
+                if(!name.isEmpty()){
+                    listRestaurantImageFilter.clear();
+                    listRestaurantInfoFilter.clear();
+                    listRestarantDirFilter.clear();
+                    ListFragment.listRestaurant.clear();
+                    for(int i = 0; i < listRestaurantInfo.size(); i++){
+                        if(listRestaurantInfo.get(i)[0].equalsIgnoreCase(name)){
+                            listRestaurantInfoFilter.add(listRestaurantInfo.get(i));
+                            listRestaurantImageFilter.add(listRestaurantImage.get(i));
+                            listRestarantDirFilter.add(listRestarantDir.get(i));
+                            String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
+                            ListFragment.listRestaurant.add(list);
+                        }
+                    }
+                }
+                else
+                    Toast.makeText(this,"Digite el nombre",Toast.LENGTH_LONG).show();
+                break;
+            case 2:
+                int selectRadio = radioGroupPrecio.getCheckedRadioButtonId();
+                if(selectRadio != -1){
+                    String precio = "";
+                    switch (select) {
+                        case R.id.rbutton1:
+                            precio = "0";
+                            break;
+                        case R.id.rbutton2:
+                            precio = "1";
+                            break;
+                        case R.id.rbutton3:
+                            precio = "2";
+                            break;
+                    }
+
+                    listRestaurantImageFilter.clear();
+                    listRestaurantInfoFilter.clear();
+                    listRestarantDirFilter.clear();
+                    ListFragment.listRestaurant.clear();
+                    for(int i = 0; i < listRestaurantInfo.size(); i++){
+                        if(listRestaurantInfo.get(i)[4] == precio){
+                            listRestaurantInfoFilter.add(listRestaurantInfo.get(i));
+                            listRestaurantImageFilter.add(listRestaurantImage.get(i));
+                            listRestarantDirFilter.add(listRestarantDir.get(i));
+                            String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
+                            ListFragment.listRestaurant.add(list);
+                        }
+                    }
+                }
+                else
+                    Toast.makeText(this,"Elija el precio",Toast.LENGTH_LONG).show();
+                break;
+            case 3:
+                String food = sp_typeFood.getSelectedItem().toString();
+                listRestaurantImageFilter.clear();
+                listRestaurantInfoFilter.clear();
+                listRestarantDirFilter.clear();
+                ListFragment.listRestaurant.clear();
+                for(int i = 0; i < listRestaurantInfo.size(); i++){
+                    if(listRestaurantInfo.get(i)[3].equalsIgnoreCase(food)){
+                        listRestaurantInfoFilter.add(listRestaurantInfo.get(i));
+                        listRestaurantImageFilter.add(listRestaurantImage.get(i));
+                        listRestarantDirFilter.add(listRestarantDir.get(i));
+                        String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
+                        ListFragment.listRestaurant.add(list);
+                    }
+                }
+                break;
+            case 4:
+                txtDist.setVisibility(View.VISIBLE);
+        }
+        ListFragment.adapterList.notifyDataSetChanged();
+    }
 }
