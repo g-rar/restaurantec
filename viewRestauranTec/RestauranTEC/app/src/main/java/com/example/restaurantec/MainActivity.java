@@ -3,6 +3,7 @@ package com.example.restaurantec;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -325,7 +326,31 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case 4:
-                txtDist.setVisibility(View.VISIBLE);
+                String dist = txtDist.getText().toString();
+                if(!dist.isEmpty()){
+                    float distF = Float.valueOf(dist);
+                    listRestaurantImageFilter.clear();
+                    listRestaurantInfoFilter.clear();
+                    listRestarantDirFilter.clear();
+
+                    Location myLocation = MapaFragment.mMap.getMyLocation();
+                    ListFragment.listRestaurant.clear();
+                    for(int i = 0; i < listRestaurantInfo.size(); i++){
+                        Location restaurant = new Location("inicio");
+                        restaurant.setLatitude(listRestarantDir.get(i)[0]);
+                        restaurant.setLongitude(listRestarantDir.get(i)[1]);
+                        if(myLocation.distanceTo(restaurant) <= distF){
+                            listRestaurantInfoFilter.add(listRestaurantInfo.get(i));
+                            listRestaurantImageFilter.add(listRestaurantImage.get(i));
+                            listRestarantDirFilter.add(listRestarantDir.get(i));
+                            String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
+                            ListFragment.listRestaurant.add(list);
+                        }
+                    }
+                }
+                else
+                    Toast.makeText(this,"Digite la distancia",Toast.LENGTH_LONG).show();
+                break;
         }
         ListFragment.adapterList.notifyDataSetChanged();
         MapaFragment.addPointers();
