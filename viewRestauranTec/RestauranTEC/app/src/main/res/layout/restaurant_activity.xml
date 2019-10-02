@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RestaurantActivity">
+
+    <ScrollView
+        android:id="@+id/scrollRestaurant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/relativeRestaurant"
+        android:background="#202732">
+
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="Name"
+            android:textSize="36sp" />
+
+        <RatingBar
+            android:id="@+id/ratingRestaurantP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtName"
+            android:layout_centerHorizontal="true"
+            android:isIndicator="true"
+            android:layout_marginTop="0dp"
+            android:numStars="5"
+            android:scaleX=".7"
+            android:scaleY=".7"
+            android:stepSize=".5" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ratingRestaurantP"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="30dp"
+            android:text="Calificar"
+            android:textSize="20sp" />
+
+        <RatingBar
+            android:id="@+id/ratingRestaurant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView3"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="-35dp"
+            android:layout_marginTop="0dp"
+            android:numStars="5"
+            android:scaleX=".7"
+            android:scaleY=".7"
+            android:stepSize=".5" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ratingRestaurantP"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            android:text="Tipo de comida:"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/txtTypeFood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView4"
+            android:layout_alignStart="@+id/textView4"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="10dp"
+            android:text="Chiclosa"
+            android:textSize="20sp" />
+
+        <fragment
+            android:id="@+id/mapRestaurant"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_below="@+id/txtTypeFood"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:tag="MapaP" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mapRestaurant"
+            android:layout_marginTop="25dp"
+            android:text="Precio"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/imgPrecio"
+            android:layout_width="98dp"
+            android:layout_height="32dp"
+            android:layout_below="@+id/textView6"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/rGroupPrecio"
+            android:src="@drawable/dollar3"/>
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mapRestaurant"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="31dp"
+            android:text="Teléfono"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/txtPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView7"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:text="86157520"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtPhone"
+            android:layout_marginTop="30dp"
+            android:text="Horario:"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/txtHor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView9"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="30dp"
+            android:layout_toStartOf="@+id/btnImage"
+            android:text="Todos los dias"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnAbrirGal"
+            android:layout_marginTop="10dp"
+            android:text="Comentarios"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/edTxtComent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_below="@+id/btnAbrirGal"
+            android:layout_marginTop="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btnAddComent"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edTxtComent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/button_rounded"
+            android:text="Agregar"
+            android:textColor="#FFFFFF"
+            android:onClick="addComent"/>
+
+        <ListView
+            android:id="@+id/listComentRest"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_below="@+id/btnAddComent"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="30dp"
+            android:layout_alignParentBottom="true"/>
+
+        <Button
+            android:id="@+id/btnImage"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtPhone"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/button_rounded"
+            android:onClick="addPicture"
+            android:text="Agregar imagenes"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btnAbrirGal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnImage"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/button_rounded"
+            android:onClick="abrir"
+            android:text="Ver Imagenes"
+            android:textColor="#FFFFFF" />
+    </RelativeLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

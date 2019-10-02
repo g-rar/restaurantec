@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">RestauranTEC</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+    <string name="facebook_app_id">2551055078462140</string>
+    <string name="fb_login_protocol_scheme">fb2551055078462140</string>
+
+    <string name="prompt">Choose a country</string>
+    <string-array name="countries_array">
+        <item>Mexicana</item>
+        <item>Rapida</item>
+        <item>USA</item>
+        <item>Indonesia</item>
+        <item>Brazil</item>
+        <item>Pakistan</item>
+        <item>Nigeria</item>
+        <item>Bangladesh</item>
+        <item>Russia</item>
+    </string-array>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
