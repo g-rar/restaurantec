@@ -24,7 +24,7 @@ public class ImageActivity extends AppCompatActivity {
         if(getIntent() != null) {
             int pos = getIntent().getIntExtra("posList",0);
             listViewRestaurant = findViewById(R.id.listViewImage);
-            adapterList = new AdapterImageList(this, MainActivity.listRestaurantImage, pos);
+            adapterList = new AdapterImageList(this, MainActivity.listRestaurantImageFilter, pos);
             listViewRestaurant.setAdapter(adapterList);
             adapterList.notifyDataSetChanged();
         }

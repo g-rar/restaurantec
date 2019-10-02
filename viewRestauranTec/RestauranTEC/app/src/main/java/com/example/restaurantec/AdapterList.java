@@ -44,7 +44,8 @@ public class AdapterList extends BaseAdapter {
         TextView txtTipo = vista.findViewById(R.id.txt_tipoComida);
         txtNombre.setText(datos.get(i)[0]);
         rating.setRating(Float.parseFloat(datos.get(i)[1]));
-        txtTipo.setText(datos.get(i)[1]);
+        txtTipo.setText(datos.get(i)[2]);
+
         return vista;
     }
 
