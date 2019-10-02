@@ -210,14 +210,28 @@
 
         <Button
             android:id="@+id/btnImage"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imgDolar3"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="50dp"
-            android:layout_centerHorizontal="true"
             android:background="@drawable/button_rounded"
             android:onClick="addPicture"
             android:text="Agregar imagenes"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btnAbrirGal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgDolar3"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/button_rounded"
+            android:onClick="abrir"
+            android:text="Ver Imagenes"
             android:textColor="#FFFFFF" />
 
         <TextView

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,6 +21,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -59,7 +61,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     private final int PHOTO_CODE = 200;
     private final int SELECT_PICTURE = 300;
     private RelativeLayout mRlView;
-
+    private ArrayList<Bitmap> images;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +95,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         adapterList.notifyDataSetChanged();
 
         mRlView = findViewById(R.id.relativeRestaurant);
-
+        images = new ArrayList<Bitmap>();
         myRequestStoragePermission();
     }
 
@@ -162,7 +164,13 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         }
     };
 
-    public void addPictureRestaurant(View view){
+    public void abrir(View view){
+        MainActivity.listRestaurantImage.add(images);
+        Intent intent = new Intent(this,ImageActivity.class);
+        startActivity(intent);
+    }
+
+    public void addPicture(View view){
         final CharSequence[] options = {"Tomar foto", "Elegir de galeria", "Cancelar"};
         final AlertDialog.Builder builder = new AlertDialog.Builder(RestaurantActivity.this);
         builder.setTitle("Elige una opción");
@@ -237,15 +245,16 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         if(resultCode == RESULT_OK){
             switch (requestCode){
                 case PHOTO_CODE:
-
-
-
                     Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                    // mSetImage.setImageBitmap(bitmap);
+                    images.add(bitmap);
                     break;
                 case SELECT_PICTURE:
                     Uri path = data.getData();
-                    //mSetImage.setImageURI(path);
+                    ImageView imageView = new ImageView(this);
+                    imageView.setImageURI(path);
+
+                    Bitmap bitmap1 = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                    images.add(bitmap1);
                     break;
 
             }

@@ -2,6 +2,7 @@ package com.example.restaurantec;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -37,6 +38,8 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     private ImageView imgDollar1;
     private ImageView imgDollar2;
     private ImageView imgDollar3;
+    public static ArrayList<ArrayList<Bitmap>> listRestaurantImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +134,8 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        listRestaurantImage = new ArrayList<ArrayList<Bitmap>>();
     }
 
     private void selectItem(int type){
