@@ -21,11 +21,13 @@ public class ImageActivity extends AppCompatActivity {
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-
-        listViewRestaurant = findViewById(R.id.listViewImage);
-        adapterList = new AdapterImageList(this, MainActivity.listRestaurantImage);
-        listViewRestaurant.setAdapter(adapterList);
-        adapterList.notifyDataSetChanged();
+        if(getIntent() != null) {
+            int pos = getIntent().getIntExtra("posList",0);
+            listViewRestaurant = findViewById(R.id.listViewImage);
+            adapterList = new AdapterImageList(this, MainActivity.listRestaurantImage, pos);
+            listViewRestaurant.setAdapter(adapterList);
+            adapterList.notifyDataSetChanged();
+        }
     }
 
     public void restorePassword(View view){

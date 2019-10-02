@@ -20,10 +20,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -31,6 +34,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.restaurantec.ui.main.ListFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -46,7 +50,7 @@ import static android.Manifest.permission.CAMERA;
 
 
 public class RestaurantAddActivity extends AppCompatActivity implements OnMapReadyCallback {
-    private Spinner spinner;
+    private Spinner foods;
     private GoogleMap mMap = null;
     private Location locationPrevious;
     private int OK_RESULT_CODE = 1;
@@ -57,6 +61,11 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
     private final int SELECT_PICTURE = 300;
     private RelativeLayout mRlView;
     private ArrayList<Bitmap> images;
+    private EditText txtName;
+    private EditText txtPhone;
+    private EditText txtHorario;
+    private RadioGroup radio;
+    private double[] locationRestaurant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,20 +75,26 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        spinner = (Spinner) findViewById(R.id.spinner);
+        foods = findViewById(R.id.spinner);
         String[] letra = {"Rápida","Mexicana","Casera","D","E"};
-        spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, letra));
+        foods.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, letra));
         svRestoDetail = findViewById(R.id.scrollAddRestaurant);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapAdd);
         mapFragment.getMapAsync(this);
         mRlView = findViewById(R.id.relativeAdd);
         images = new ArrayList<Bitmap>();
+
+        txtName = findViewById(R.id.edTxtName);
+        txtPhone = findViewById(R.id.edTxtPhone);
+        txtHorario = findViewById(R.id.edTxtH);
+        radio = findViewById(R.id.rGroupPrecio);
+        MainActivity.listRestaurantImage.add(images);
         myRequestStoragePermission();
     }
 
     public void abrir(View view){
-        MainActivity.listRestaurantImage.add(images);
         Intent intent = new Intent(this,ImageActivity.class);
+        intent.putExtra("posList",MainActivity.listRestaurantImage.size()-1);
         startActivity(intent);
     }
 
@@ -129,24 +144,20 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
 
     private void antut(Location location){
         if(location != null) {
-
             LatLng lActual = new LatLng(location.getLatitude(), location.getLongitude());
             if(locationPrevious == null){
-                //mMap.addMarker(new MarkerOptions().position(lActual).title("Inicio Recorrido"));
                 locationPrevious = location;
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lActual,18.0f));
             }
-
-            LatLng lPrevious = new LatLng(locationPrevious.getLatitude(), locationPrevious.getLongitude());
-            //mMap.addMarker( new MarkerOptions().position( lActual ).title( "The Smoothie Shop" ).icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory. ) ) );
             locationPrevious = location;
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng point) {
-                    //allPoints.add(point);
-                    mMap.addMarker(new MarkerOptions().position(point).title("Inicio Recorrido"));
                     mMap.clear();
                     mMap.addMarker(new MarkerOptions().position(point));
+                    locationRestaurant = new double[2];
+                    locationRestaurant[0] = point.latitude;
+                    locationRestaurant[1] = point.longitude;
                 }
             });
             mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
@@ -288,5 +299,38 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
+
+    public void addRestaurant(View view) {
+        String name = txtName.getText().toString();
+        String phone = txtPhone.getText().toString();
+        String horario = txtHorario.getText().toString();
+        String food = foods.getSelectedItem().toString();
+        int select = radio.getCheckedRadioButtonId();
+        boolean isNotComp = name.isEmpty() || phone.isEmpty() || horario.isEmpty() || (select == -1) || (locationRestaurant == null);
+
+        if(!isNotComp){
+            String precio = "";
+            switch (select){
+                case R.id.rbutton1:
+                    precio = "0";
+                    break;
+                case R.id.rbutton2:
+                    precio = "1";
+                    break;
+                case R.id.rbutton3:
+                    precio = "2";
+                    break;
+            }
+            String[] info = {name,phone,horario,food,precio,"2.5"};
+            MainActivity.listRestaurantInfo.add(info);
+            MainActivity.listRestarantDir.add(locationRestaurant);
+            String[] list = {name,"2.5",food};
+            ListFragment.listRestaurant.add(list);
+            ListFragment.adapterList.notifyDataSetChanged();
+            finish();
+        }
+        else
+            Toast.makeText(this,"Complete todo lo solicitado",Toast.LENGTH_LONG).show();
     }
 }

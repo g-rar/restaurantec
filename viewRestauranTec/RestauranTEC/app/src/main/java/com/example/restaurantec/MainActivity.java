@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity
     private ImageView imgDollar2;
     private ImageView imgDollar3;
     public static ArrayList<ArrayList<Bitmap>> listRestaurantImage;
+    public static ArrayList<String[]> listRestaurantInfo;
+    public static ArrayList<double[]> listRestarantDir;
+    private String[] user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,17 +94,19 @@ public class MainActivity extends AppCompatActivity
 
         if(getIntent() != null) {
             String isFacebook = getIntent().getStringExtra("facebook");
+            user = new String[2];
+            user[0] = getIntent().getStringExtra("email");
+            email.setText(user[0]);
             if(isFacebook.equalsIgnoreCase("True")) {
                 String image_url = getIntent().getStringExtra("image");
                 Glide.with(MainActivity.this).load(image_url).into(circleImageView);
-                email.setText(getIntent().getStringExtra("email"));
-                name.setText(getIntent().getStringExtra("name"));
+                user[1] = getIntent().getStringExtra("name");
             }
             else {
                 Glide.with(MainActivity.this).load("https://image.flaticon.com/icons/svg/149/149071").into(circleImageView);
-                email.setText("Email");
-                name.setText("Usuario");
+                user[1] = "Adrian";
             }
+            name.setText(user[1]);
         }
 
         txtName = findViewById(R.id.edTxtName);
@@ -136,6 +141,8 @@ public class MainActivity extends AppCompatActivity
         });
 
         listRestaurantImage = new ArrayList<ArrayList<Bitmap>>();
+        listRestaurantInfo = new ArrayList<String[]>();
+        listRestarantDir = new ArrayList<double[]>();
     }
 
     private void selectItem(int type){
@@ -192,42 +199,22 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            // Handle the camera action
+        if (id == R.id.add_retaurant) {
             Intent intent = new Intent(this, RestaurantAddActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_tools) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-            //LoginActivity.loginButton.performClick();
-            //if(!LoginActivity.cancel()) {
+        } else if (id == R.id.nav_exit) {
                 Intent data = new Intent();
                 data.setData(Uri.parse("exit"));
                 setResult(RESULT_OK, data);
                 finish();
-            //}
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-
-
-    public void agregar(View view){
-        String[] lista = {"Adrian"};
-        ListFragment.listRestaurant.add(lista);
-        ListFragment.adapterList.notifyDataSetChanged();
     }
 
 }

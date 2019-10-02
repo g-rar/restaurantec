@@ -1,6 +1,7 @@
 package com.example.restaurantec;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,6 +28,8 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -39,6 +42,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -62,7 +66,11 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     private final int SELECT_PICTURE = 300;
     private RelativeLayout mRlView;
     private ArrayList<Bitmap> images;
+    private String nameS;
+    private LatLng locationRest;
+    private int pos;
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -84,18 +92,52 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapRestaurant);
         mapFragment.getMapAsync(this);
+        if(getIntent() != null) {
+            pos = getIntent().getIntExtra("listPos",0);
+            TextView name = findViewById(R.id.txtName);
+            name.setText(MainActivity.listRestaurantInfo.get(pos)[0]);
+            nameS = MainActivity.listRestaurantInfo.get(pos)[0];
 
+            TextView food = findViewById(R.id.txtTypeFood);
+            food.setText(MainActivity.listRestaurantInfo.get(pos)[3]);
+
+            TextView phone = findViewById(R.id.txtPhone);
+            phone.setText(MainActivity.listRestaurantInfo.get(pos)[1]);
+
+            TextView horario = findViewById(R.id.txtHor);
+            horario.setText(MainActivity.listRestaurantInfo.get(pos)[2]);
+
+            RatingBar rating = findViewById(R.id.ratingRestaurantP);
+            rating.setRating(Float.parseFloat(MainActivity.listRestaurantInfo.get(pos)[5]));
+
+            ImageView imgPrecio = findViewById(R.id.imgPrecio);
+
+            locationRest = new LatLng(MainActivity.listRestarantDir.get(pos)[0], MainActivity.listRestarantDir.get(pos)[1]);
+
+            switch(MainActivity.listRestaurantInfo.get(pos)[4])
+            {
+                case "0":
+                    imgPrecio.setImageResource(R.drawable.dollar1);
+                    break;
+                case "1":
+                    imgPrecio.setImageResource(R.drawable.dollar2);
+                    break;
+                case "2":
+                    imgPrecio.setImageResource(R.drawable.dollar3);
+                    break;
+            }
+            images = MainActivity.listRestaurantImage.get(pos);
+        }
         listComentRestaurant = findViewById(R.id.listComentRest);
 
         listComent = new ArrayList<String[]>();
         adapterList = new AdapterComentList(this, listComent);
         listComentRestaurant.setAdapter(adapterList);
-        String[] lista = {"Adrian","20/01/1998","Este comentario es de prueba y es que no sabia que poner pero bueno yo que se me gusta el melon."};
-        listComent.add(lista);
-        adapterList.notifyDataSetChanged();
+        //String[] lista = {"Adrian","20/01/1998","Este comentario es de prueba y es que no sabia que poner pero bueno yo que se me gusta el melon."};
+        //listComent.add(lista);
+       // adapterList.notifyDataSetChanged();
 
         mRlView = findViewById(R.id.relativeRestaurant);
-        images = new ArrayList<Bitmap>();
         myRequestStoragePermission();
     }
 
@@ -124,13 +166,10 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
 
             LatLng lActual = new LatLng(location.getLatitude(), location.getLongitude());
             if(locationPrevious == null){
-                //mMap.addMarker(new MarkerOptions().position(lActual).title("Inicio Recorrido"));
+                mMap.addMarker(new MarkerOptions().position(locationRest)).setTitle(nameS);
                 locationPrevious = location;
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lActual,18.0f));
             }
-
-            LatLng lPrevious = new LatLng(locationPrevious.getLatitude(), locationPrevious.getLongitude());
-            //mMap.addMarker( new MarkerOptions().position( lActual ).title( "The Smoothie Shop" ).icon( BitmapDescriptorFactory.defaultMarker( BitmapDescriptorFactory. ) ) );
             locationPrevious = location;
             mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
                 @Override
@@ -165,8 +204,8 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     };
 
     public void abrir(View view){
-        MainActivity.listRestaurantImage.add(images);
         Intent intent = new Intent(this,ImageActivity.class);
+        intent.putExtra("posList",pos);
         startActivity(intent);
     }
 
@@ -192,6 +231,8 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         });
         AlertDialog alert = builder.create();
         alert.show();
+        MainActivity.listRestaurantImage.remove(pos);
+        MainActivity.listRestaurantImage.add(pos,images);
     }
 
     private void openCamera(){

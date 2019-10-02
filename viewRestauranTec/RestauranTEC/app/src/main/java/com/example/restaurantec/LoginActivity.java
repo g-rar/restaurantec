@@ -39,7 +39,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public LoginButton loginButton;
     private CircleImageView circleImageView;
-    private TextView txtName,txtEmail;
+    private EditText txtEmail;
+    private EditText txtPass;
     int request_code = 1;
     private CallbackManager callbackManager;
 
@@ -58,6 +59,9 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setReadPermissions(Arrays.asList("email","public_profile"));
         componentEnabled(false);
         checkLoginStatus();
+
+        txtEmail = findViewById(R.id.edTxtUser);
+        txtPass = findViewById(R.id.eTxtPass);
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -98,10 +102,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view){
-        componentEnabled(false);
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("facebook","False");
-        startActivity(intent);
+        String email = txtEmail.getText().toString();
+        String password = txtPass.getText().toString();
+
+        boolean isNotComp = email.isEmpty() || password.isEmpty();
+
+        if(!isNotComp) {
+            componentEnabled(false);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("facebook", "False");
+            intent.putExtra("email",email);
+            startActivity(intent);
+        }
+        else
+            Toast.makeText(this,"Complete todo lo solicitado",Toast.LENGTH_LONG).show();
     }
 
     public void register(View view){

@@ -29,7 +29,7 @@
             android:textSize="24sp" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/edTxtName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView8"
@@ -52,7 +52,7 @@
             android:textSize="24sp" />
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/edTxtPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView"
@@ -75,7 +75,7 @@
             android:textSize="24sp" />
 
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/edTxtH"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView10"
@@ -84,7 +84,7 @@
             android:layout_toEndOf="@+id/textView"
             android:ems="10"
             android:textColor="#FFFFFF"
-            android:inputType="phone" />
+            android:inputType="text" />
 
         <TextView
             android:id="@+id/textView6"
@@ -116,19 +116,19 @@
             android:layout_marginTop="20dp">
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/rbutton1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <RadioButton
-                android:id="@+id/radioButton3"
+                android:id="@+id/rbutton2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <RadioButton
-                android:id="@+id/radioButton"
+                android:id="@+id/rbutton3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -196,7 +196,7 @@
             android:tag="MapaP" />
 
         <Button
-            android:id="@+id/btnIniciar"
+            android:id="@+id/btnAddRestaurant"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/mapAdd"
@@ -206,7 +206,8 @@
             android:text="Agregar"
             android:textColor="#FFFFFF"
             android:layout_marginBottom="30dp"
-            android:layout_alignParentBottom="true"/>
+            android:layout_alignParentBottom="true"
+            android:onClick="addRestaurant"/>
 
         <Button
             android:id="@+id/btnImage"

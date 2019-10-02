@@ -19,20 +19,20 @@
         android:background="#202732">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/txtName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:text="TextView"
+            android:text="Name"
             android:textSize="36sp" />
 
         <RatingBar
             android:id="@+id/ratingRestaurantP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView2"
+            android:layout_below="@+id/txtName"
             android:layout_centerHorizontal="true"
             android:isIndicator="true"
             android:layout_marginTop="0dp"
@@ -77,7 +77,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/txtTypeFood"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView4"
@@ -92,7 +92,7 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:layout_below="@+id/textView5"
+            android:layout_below="@+id/txtTypeFood"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
             android:tag="MapaP" />
@@ -109,7 +109,7 @@
             android:textSize="20sp" />
 
         <ImageView
-            android:id="@+id/imgDolar1"
+            android:id="@+id/imgPrecio"
             android:layout_width="98dp"
             android:layout_height="32dp"
             android:layout_below="@+id/textView6"
@@ -123,14 +123,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/mapRestaurant"
-            android:layout_alignStart="@+id/textView8"
-            android:layout_marginStart="0dp"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="31dp"
             android:text="Teléfono"
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/textView8"
+            android:id="@+id/txtPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView7"
@@ -144,7 +144,7 @@
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView8"
+            android:layout_below="@+id/txtPhone"
             android:layout_marginTop="30dp"
             android:text="Horario:"
             android:layout_alignParentStart="true"
@@ -152,14 +152,16 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/txtHor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView9"
-            android:layout_marginTop="5dp"
-            android:text="Todos los dias"
             android:layout_alignParentStart="true"
             android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="30dp"
+            android:layout_toStartOf="@+id/btnImage"
+            android:text="Todos los dias"
             android:textSize="20sp" />
 
         <TextView
@@ -182,7 +184,7 @@
             android:layout_marginTop="40dp"
             android:layout_alignParentStart="true"
             android:layout_marginStart="5dp"
-            android:inputType="textPersonName" />
+            android:inputType="text" />
 
         <Button
             android:id="@+id/btnAddComent"
@@ -211,7 +213,7 @@
             android:id="@+id/btnImage"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView8"
+            android:layout_below="@+id/txtPhone"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"

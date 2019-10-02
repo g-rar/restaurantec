@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 public class AdapterImageList extends BaseAdapter {
@@ -18,10 +20,10 @@ public class AdapterImageList extends BaseAdapter {
     private Context context;
     private ArrayList<Bitmap> datos;
 
-    public AdapterImageList(Context pContext, ArrayList<ArrayList<Bitmap>> pDatos) {
+    public AdapterImageList(Context pContext, ArrayList<ArrayList<Bitmap>> pDatos, int pPos) {
         context = pContext;
         if(pDatos.size() > 0)
-            datos = pDatos.get(pDatos.size()-1);
+            datos = pDatos.get(pPos);
         else
             datos = new ArrayList<Bitmap>();
         inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
@@ -47,6 +49,8 @@ public class AdapterImageList extends BaseAdapter {
         final View vista = inflater.inflate(R.layout.image_list, null);
         ImageView imgRestaurant = vista.findViewById(R.id.img_restaurant);
         imgRestaurant.setImageBitmap(datos.get(i));
+
+        //Picasso.with(vista.getContext())..into(imageView);
         return vista;
     }
 }

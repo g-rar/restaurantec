@@ -52,14 +52,12 @@ public class ListFragment extends Fragment {
         listRestaurant = new ArrayList<String[]>();
         adapterList = new AdapterList(root.getContext(), listRestaurant);
         listViewRestaurant.setAdapter(adapterList);
-        String[] lista = {"Adrian","2.5","Rapida"};
-        ListFragment.listRestaurant.add(lista);
-        ListFragment.adapterList.notifyDataSetChanged();
 
         listViewRestaurant.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(main, RestaurantActivity.class);
+                intent.putExtra("listPos",i);
                 startActivity(intent);
             }
         });
