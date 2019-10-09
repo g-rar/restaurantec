@@ -96,11 +96,11 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
                     MainActivity.listRestaurantInfoFilter.get(pos)[5] = calTotal + "";
                     RatingBar rating = findViewById(R.id.ratingRestaurantP);
                     rating.setRating(Float.parseFloat(MainActivity.listRestaurantInfoFilter.get(pos)[5]));
-                    for (int i = 0; i < MainActivity.listRestaurantInfo.size(); i++) {
+                    for (int i = 0; i < MainActivity.listRestaurantInfoFilter.size(); i++) {
                         if (MainActivity.listRestaurantInfo.get(i)[0].equalsIgnoreCase(MainActivity.listRestaurantInfoFilter.get(pos)[0])) {
-                            MainActivity.listRestaurantInfo.get(i)[5] = MainActivity.listRestaurantInfoFilter.get(i)[5];
-                            MainActivity.listRestaurantInfo.get(i)[6] = MainActivity.listRestaurantInfoFilter.get(i)[6];
-                            MainActivity.listRestaurantInfo.get(i)[7] = MainActivity.listRestaurantInfoFilter.get(i)[7];
+                            MainActivity.listRestaurantInfo.get(i)[5] = MainActivity.listRestaurantInfoFilter.get(pos)[5];
+                            MainActivity.listRestaurantInfo.get(i)[6] = MainActivity.listRestaurantInfoFilter.get(pos)[6];
+                            MainActivity.listRestaurantInfo.get(i)[7] = MainActivity.listRestaurantInfoFilter.get(pos)[7];
                             break;
                         }
                     }
