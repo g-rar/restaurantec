@@ -1,6 +1,5 @@
 package com.example.restaurantec;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -26,7 +26,6 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -41,8 +40,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -76,7 +83,7 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
         w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         foods = findViewById(R.id.spinner);
-        String[] letra = {"Rapida","Mexicana","Casera","D","E"};
+        String[] letra = {"Rapida","Mexicana","Casera","Pinto","Italiana","Postres","Exotica"};
         foods.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, letra));
         svRestoDetail = findViewById(R.id.scrollAddRestaurant);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapAdd);
@@ -153,6 +160,7 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng point) {
+                    RestaurantAddActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                     mMap.clear();
                     mMap.addMarker(new MarkerOptions().position(point));
                     locationRestaurant = new double[2];
@@ -313,19 +321,21 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
             String precio = "";
             switch (select){
                 case R.id.rbutton1:
-                    precio = "0";
+                    precio = "S";
                     break;
                 case R.id.rbutton2:
-                    precio = "1";
+                    precio = "SS";
                     break;
                 case R.id.rbutton3:
-                    precio = "2";
+                    precio = "SSS";
                     break;
             }
-            String[] info = {name,phone,horario,food,precio,"2.5"};
+            String[] info = {name,phone,horario,food,precio,"0","0","0"};
             MainActivity.listRestaurantInfo.add(info);
-            MainActivity.listRestarantDir.add(locationRestaurant);
-            String[] list = {name,"2.5",food};
+            MainActivity.listRestaurantDir.add(locationRestaurant);
+            String[] list = {name,"0",food};
+            MainActivity.listRestaurantComent.add(new ArrayList<String[]>());
+            MainActivity.listRestaurantCali.add(new ArrayList<String[]>());
             ListFragment.listRestaurant.add(list);
             ListFragment.adapterList.notifyDataSetChanged();
             MainActivity.reset();
@@ -334,4 +344,6 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
         else
             Toast.makeText(this,"Complete todo lo solicitado",Toast.LENGTH_LONG).show();
     }
+
+
 }

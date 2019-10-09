@@ -19,11 +19,11 @@
             android:textSize="36sp" />
 
         <EditText
-            android:id="@+id/edTxtUser"
+            android:id="@+id/edTxtEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName"
+            android:inputType="textEmailAddress"
             android:hint="Email"
             android:layout_marginTop="100dp"
             android:textColorHint="#80FFFFFF"
@@ -37,13 +37,27 @@
             android:id="@+id/btnRestore"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/edTxtUser"
+            android:layout_below="@+id/edTxtEmail"
             android:layout_marginTop="30dp"
             android:layout_centerHorizontal="true"
             android:text="Restaurar Contraseña"
             android:textColor="#FFFFFF"
             android:background="@drawable/button_rounded"
             android:onClick="restorePassword"/>
+
+        <TextView
+            android:id="@+id/txtNotify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnRestore"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="30dp"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -62,7 +62,7 @@
             android:layout_marginEnd="10dp"
             android:backgroundTint="@color/colorPrimary"
             android:ems="10"
-            android:hint="Distancia en Km"
+            android:hint="Distancia en mts"
             android:inputType="number"
             android:textColor="#FFFFFF"
             android:textColorHint="#80FFFFFF"
@@ -74,6 +74,52 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_tipoBusqueda"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/txt_maxStars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/spMaxStars"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="Max:"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:visibility="invisible"/>
+
+        <Spinner
+            android:id="@+id/spMaxStars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/txt_minStars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spMaxStars"
+            android:layout_toStartOf="@+id/spMaxStars"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="Min:"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:visibility="invisible"/>
+
+        <Spinner
+            android:id="@+id/spMinStars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spMaxStars"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"

@@ -31,7 +31,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.Menu;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -55,6 +54,10 @@ public class MainActivity extends AppCompatActivity
 
     private Spinner sp_type;
     private Spinner sp_typeFood;
+    private Spinner sp_maxStars;
+    private Spinner sp_minStars;
+    private TextView txtMaxStars;
+    private TextView txtMinStars;
     private TextView txtName;
     private TextView txtDist;
     private RadioGroup radioGroupPrecio;
@@ -62,13 +65,22 @@ public class MainActivity extends AppCompatActivity
     private ImageView imgDollar2;
     private ImageView imgDollar3;
     public static ArrayList<ArrayList<Bitmap>> listRestaurantImage;
+    public static ArrayList<ArrayList<String[]>> listRestaurantCali;
+    public static ArrayList<ArrayList<String[]>> listRestaurantComent;
     public static ArrayList<String[]> listRestaurantInfo;
-    public static ArrayList<double[]> listRestarantDir;
+    public static ArrayList<double[]> listRestaurantDir;
 
     public static ArrayList<ArrayList<Bitmap>> listRestaurantImageFilter;
+    public static ArrayList<ArrayList<String[]>> listRestaurantCaliFilter;
+    public static ArrayList<ArrayList<String[]>> listRestaurantComentFilter;
     public static ArrayList<String[]> listRestaurantInfoFilter;
-    public static ArrayList<double[]> listRestarantDirFilter;
+    public static ArrayList<double[]> listRestaurantDirFilter;
     public static String[] user;
+    public static boolean touchMap;
+    private ArrayList<String[]> users;
+    private JSONObject jsonRestaurants;
+    private JSONObject jsonComentarios;
+    private JSONObject jsonCalif;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,18 +123,21 @@ public class MainActivity extends AppCompatActivity
             if(isFacebook.equalsIgnoreCase("True")) {
                 String image_url = getIntent().getStringExtra("image");
                 Glide.with(MainActivity.this).load(image_url).into(circleImageView);
-                user[1] = getIntent().getStringExtra("name");
             }
             else {
                 Glide.with(MainActivity.this).load("https://image.flaticon.com/icons/svg/149/149071").into(circleImageView);
-                user[1] = "Adrian";
             }
+            user[1] = getIntent().getStringExtra("name");
             name.setText(user[1]);
         }
 
         txtName = findViewById(R.id.edTxtName);
 
         txtDist = findViewById(R.id.edTxtDist);
+
+        txtMaxStars = findViewById(R.id.txt_maxStars);
+
+        txtMinStars = findViewById(R.id.txt_minStars);
 
         radioGroupPrecio = findViewById(R.id.rGroupPrecio);
 
@@ -132,12 +147,19 @@ public class MainActivity extends AppCompatActivity
 
         imgDollar3 = findViewById(R.id.imgDolar3);
 
+        sp_maxStars = findViewById(R.id.spMaxStars);
+        String[] stars = {"0","0.5","1","1.5","2","2.5","3","3.5","4","4.5","5"};
+        sp_maxStars.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stars));
+
+        sp_minStars = findViewById(R.id.spMinStars);
+        sp_minStars.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stars));
+
         sp_typeFood = (Spinner) findViewById(R.id.spTipoComida);
-        String[] foods = {"Rapida","Mexicana","Casera","Italiana","Sandia"};
+        String[] foods = {"Rapida","Mexicana","Casera","Pinto","Italiana","Postres","Exotica"};
         sp_typeFood.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, foods));
 
         sp_type = (Spinner) findViewById(R.id.spTipoBusqueda);
-        String[] letra = {"Todos","Nombre","Precio","Tipo Comida","Distancia Km"};
+        String[] letra = {"Todos","Nombre","Precio","Tipo Comida","Distancia mts", "Desde un punto", "Estrellas"};
         sp_type.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, letra));
         sp_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -152,17 +174,24 @@ public class MainActivity extends AppCompatActivity
         });
 
         listRestaurantImage = new ArrayList<ArrayList<Bitmap>>();
+        listRestaurantCali = new ArrayList<ArrayList<String[]>>();
         listRestaurantInfo = new ArrayList<String[]>();
-        listRestarantDir = new ArrayList<double[]>();
+        listRestaurantDir = new ArrayList<double[]>();
+        listRestaurantComent = new ArrayList<ArrayList<String[]>>();
 
         listRestaurantImageFilter = new ArrayList<ArrayList<Bitmap>>();
+        listRestaurantCaliFilter = new ArrayList<ArrayList<String[]>>();
+        listRestaurantComentFilter = new ArrayList<ArrayList<String[]>>();
         listRestaurantInfoFilter = new ArrayList<String[]>();
-        listRestarantDirFilter = new ArrayList<double[]>();
+        listRestaurantDirFilter = new ArrayList<double[]>();
 
-        requestData("https://serene-anchorage-77141.herokuapp.com/usuarios/2.json");
+        touchMap = false;
+
+        users = LoginActivity.users;
+
         requestData("https://serene-anchorage-77141.herokuapp.com/restaurantes.json");
-        requestData("https://serene-anchorage-77141.herokuapp.com/restaurantes/PintoHouse.json");
         requestData("https://serene-anchorage-77141.herokuapp.com/comentarios.json");
+        requestData("https://serene-anchorage-77141.herokuapp.com/calificaciones.json");
     }
 
     private void selectItem(int type){
@@ -173,6 +202,16 @@ public class MainActivity extends AppCompatActivity
         imgDollar1.setVisibility(View.INVISIBLE);
         imgDollar2.setVisibility(View.INVISIBLE);
         imgDollar3.setVisibility(View.INVISIBLE);
+        txtMinStars.setVisibility(View.INVISIBLE);
+        txtMaxStars.setVisibility(View.INVISIBLE);
+        sp_maxStars.setVisibility(View.INVISIBLE);
+        sp_minStars.setVisibility(View.INVISIBLE);
+        txtDist.setText("");
+        touchMap = false;
+        if(MapaFragment.pointMap != null) {
+            MapaFragment.pointMap.remove();
+            MapaFragment.pointMap = null;
+        }
         switch (type){
             case 1:
                 txtName.setVisibility(View.VISIBLE);
@@ -188,6 +227,17 @@ public class MainActivity extends AppCompatActivity
                 break;
             case 4:
                 txtDist.setVisibility(View.VISIBLE);
+                break;
+            case 5:
+                txtDist.setVisibility(View.VISIBLE);
+                touchMap = true;
+                break;
+            case 6:
+                txtMinStars.setVisibility(View.VISIBLE);
+                txtMaxStars.setVisibility(View.VISIBLE);
+                sp_maxStars.setVisibility(View.VISIBLE);
+                sp_minStars.setVisibility(View.VISIBLE);
+                break;
         }
     }
 
@@ -212,7 +262,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
         return super.onOptionsItemSelected(item);
     }
 
@@ -238,9 +287,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     public static void reset(){
+        if(MapaFragment.pointMap != null) {
+            MapaFragment.pointMap.remove();
+            MapaFragment.pointMap = null;
+        }
         listRestaurantImageFilter = (ArrayList<ArrayList<Bitmap>>) listRestaurantImage.clone();
+        listRestaurantComentFilter = (ArrayList<ArrayList<String[]>>) listRestaurantComent.clone();
         listRestaurantInfoFilter = (ArrayList<String[]>) listRestaurantInfo.clone();
-        listRestarantDirFilter = (ArrayList<double[]>) listRestarantDir.clone();
+        listRestaurantDirFilter = (ArrayList<double[]>) listRestaurantDir.clone();
+        listRestaurantCaliFilter = (ArrayList<ArrayList<String[]>>) listRestaurantCali.clone();
         ListFragment.listRestaurant.clear();
         for(int i = 0; i < listRestaurantInfoFilter.size(); i++){
             String[] list = {listRestaurantInfoFilter.get(i)[0],listRestaurantInfoFilter.get(i)[5],listRestaurantInfoFilter.get(i)[3]};
@@ -260,14 +315,18 @@ public class MainActivity extends AppCompatActivity
                 String name = txtName.getText().toString();
                 if(!name.isEmpty()){
                     listRestaurantImageFilter.clear();
+                    listRestaurantComentFilter.clear();
                     listRestaurantInfoFilter.clear();
-                    listRestarantDirFilter.clear();
+                    listRestaurantDirFilter.clear();
+                    listRestaurantCaliFilter.clear();
                     ListFragment.listRestaurant.clear();
                     for(int i = 0; i < listRestaurantInfo.size(); i++){
                         if(listRestaurantInfo.get(i)[0].equalsIgnoreCase(name)){
                             listRestaurantInfoFilter.add(listRestaurantInfo.get(i));
                             listRestaurantImageFilter.add(listRestaurantImage.get(i));
-                            listRestarantDirFilter.add(listRestarantDir.get(i));
+                            listRestaurantComentFilter.add(listRestaurantComent.get(i));
+                            listRestaurantDirFilter.add(listRestaurantDir.get(i));
+                            listRestaurantCaliFilter.add(listRestaurantCali.get(i));
                             String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
                             ListFragment.listRestaurant.add(list);
                         }
@@ -282,25 +341,29 @@ public class MainActivity extends AppCompatActivity
                     String precio = "";
                     switch (selectRadio) {
                         case R.id.radioButton1:
-                            precio = "0";
+                            precio = "S";
                             break;
                         case R.id.radioButton2:
-                            precio = "1";
+                            precio = "SS";
                             break;
                         case R.id.radioButton3:
-                            precio = "2";
+                            precio = "SSS";
                             break;
                     }
 
                     listRestaurantImageFilter.clear();
+                    listRestaurantComentFilter.clear();
                     listRestaurantInfoFilter.clear();
-                    listRestarantDirFilter.clear();
+                    listRestaurantDirFilter.clear();
+                    listRestaurantCaliFilter.clear();
                     ListFragment.listRestaurant.clear();
                     for(int i = 0; i < listRestaurantInfo.size(); i++){
                         if(listRestaurantInfo.get(i)[4].equalsIgnoreCase(precio)){
                             listRestaurantInfoFilter.add(listRestaurantInfo.get(i));
                             listRestaurantImageFilter.add(listRestaurantImage.get(i));
-                            listRestarantDirFilter.add(listRestarantDir.get(i));
+                            listRestaurantComentFilter.add(listRestaurantComent.get(i));
+                            listRestaurantDirFilter.add(listRestaurantDir.get(i));
+                            listRestaurantCaliFilter.add(listRestaurantCali.get(i));
                             String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
                             ListFragment.listRestaurant.add(list);
                         }
@@ -312,14 +375,17 @@ public class MainActivity extends AppCompatActivity
             case 3:
                 String food = sp_typeFood.getSelectedItem().toString();
                 listRestaurantImageFilter.clear();
+                listRestaurantComentFilter.clear();
                 listRestaurantInfoFilter.clear();
-                listRestarantDirFilter.clear();
+                listRestaurantDirFilter.clear();
+                listRestaurantCaliFilter.clear();
                 ListFragment.listRestaurant.clear();
                 for(int i = 0; i < listRestaurantInfo.size(); i++){
                     if(listRestaurantInfo.get(i)[3].equalsIgnoreCase(food)){
                         listRestaurantInfoFilter.add(listRestaurantInfo.get(i));
                         listRestaurantImageFilter.add(listRestaurantImage.get(i));
-                        listRestarantDirFilter.add(listRestarantDir.get(i));
+                        listRestaurantComentFilter.add(listRestaurantComent.get(i));
+                        listRestaurantDirFilter.add(listRestaurantDir.get(i));
                         String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
                         ListFragment.listRestaurant.add(list);
                     }
@@ -330,19 +396,23 @@ public class MainActivity extends AppCompatActivity
                 if(!dist.isEmpty()){
                     float distF = Float.valueOf(dist);
                     listRestaurantImageFilter.clear();
+                    listRestaurantComentFilter.clear();
                     listRestaurantInfoFilter.clear();
-                    listRestarantDirFilter.clear();
+                    listRestaurantDirFilter.clear();
+                    listRestaurantCaliFilter.clear();
 
                     Location myLocation = MapaFragment.mMap.getMyLocation();
                     ListFragment.listRestaurant.clear();
                     for(int i = 0; i < listRestaurantInfo.size(); i++){
                         Location restaurant = new Location("inicio");
-                        restaurant.setLatitude(listRestarantDir.get(i)[0]);
-                        restaurant.setLongitude(listRestarantDir.get(i)[1]);
+                        restaurant.setLatitude(listRestaurantDir.get(i)[0]);
+                        restaurant.setLongitude(listRestaurantDir.get(i)[1]);
                         if(myLocation.distanceTo(restaurant) <= distF){
                             listRestaurantInfoFilter.add(listRestaurantInfo.get(i));
                             listRestaurantImageFilter.add(listRestaurantImage.get(i));
-                            listRestarantDirFilter.add(listRestarantDir.get(i));
+                            listRestaurantComentFilter.add(listRestaurantComent.get(i));
+                            listRestaurantDirFilter.add(listRestaurantDir.get(i));
+                            listRestaurantCaliFilter.add(listRestaurantCali.get(i));
                             String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
                             ListFragment.listRestaurant.add(list);
                         }
@@ -351,9 +421,159 @@ public class MainActivity extends AppCompatActivity
                 else
                     Toast.makeText(this,"Digite la distancia",Toast.LENGTH_LONG).show();
                 break;
+            case 5:
+                String dist2 = txtDist.getText().toString();
+                if(!dist2.isEmpty() && MapaFragment.pointMap != null){
+                    float distF = Float.valueOf(dist2);
+                    listRestaurantImageFilter.clear();
+                    listRestaurantComentFilter.clear();
+                    listRestaurantInfoFilter.clear();
+                    listRestaurantDirFilter.clear();
+                    listRestaurantCaliFilter.clear();
+
+                    Location myLocation = new Location("punto");
+                    myLocation.setLatitude(MapaFragment.pointMap.getPosition().latitude);
+                    myLocation.setLongitude(MapaFragment.pointMap.getPosition().longitude);
+                    ListFragment.listRestaurant.clear();
+                    for(int i = 0; i < listRestaurantInfo.size(); i++){
+                        Location restaurant = new Location("inicio");
+                        restaurant.setLatitude(listRestaurantDir.get(i)[0]);
+                        restaurant.setLongitude(listRestaurantDir.get(i)[1]);
+                        if(myLocation.distanceTo(restaurant) <= distF){
+                            listRestaurantInfoFilter.add(listRestaurantInfo.get(i));
+                            listRestaurantImageFilter.add(listRestaurantImage.get(i));
+                            listRestaurantComentFilter.add(listRestaurantComent.get(i));
+                            listRestaurantDirFilter.add(listRestaurantDir.get(i));
+                            listRestaurantCaliFilter.add(listRestaurantCali.get(i));
+                            String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
+                            ListFragment.listRestaurant.add(list);
+                        }
+                    }
+                }
+                else
+                    Toast.makeText(this,"Digite la distancia y elija un punto en el mapa",Toast.LENGTH_LONG).show();
+                break;
+            case 6:
+                float max  = Float.parseFloat(sp_maxStars.getSelectedItem().toString());
+                float min  = Float.parseFloat(sp_minStars.getSelectedItem().toString());
+                if(max >= min){
+                    listRestaurantImageFilter.clear();
+                    listRestaurantComentFilter.clear();
+                    listRestaurantInfoFilter.clear();
+                    listRestaurantDirFilter.clear();
+                    listRestaurantCaliFilter.clear();
+                    ListFragment.listRestaurant.clear();
+                    for(int i = 0; i < listRestaurantInfo.size(); i++){
+                        float stars = Float.parseFloat(listRestaurantInfo.get(i)[5]);
+                        if(stars >= min && stars <= max){
+                            listRestaurantInfoFilter.add(listRestaurantInfo.get(i));
+                            listRestaurantImageFilter.add(listRestaurantImage.get(i));
+                            listRestaurantComentFilter.add(listRestaurantComent.get(i));
+                            listRestaurantDirFilter.add(listRestaurantDir.get(i));
+                            listRestaurantCaliFilter.add(listRestaurantCali.get(i));
+                            String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
+                            ListFragment.listRestaurant.add(list);
+                        }
+                    }
+                }
+                else
+                    Toast.makeText(this,"El maximo de estrallas no puede ser menor al minimo.",Toast.LENGTH_LONG).show();
         }
         ListFragment.adapterList.notifyDataSetChanged();
         MapaFragment.addPointers();
+    }
+
+    private void insertRestaurant(){
+        try {
+            JSONArray restaurants = jsonRestaurants.getJSONArray("restaurantes");
+
+            for (int i = 0; i < restaurants.length(); i++) {
+                String info[] = {restaurants.getJSONObject(i).getString("nombrerest"),
+                        restaurants.getJSONObject(i).getString("numtelefono"),
+                        restaurants.getJSONObject(i).getString("horario"),
+                        restaurants.getJSONObject(i).getString("tiporest"),
+                        restaurants.getJSONObject(i).getString("preciorest"),restaurants.getJSONObject(i).getString("calificacionrest"),"0","0"};
+                listRestaurantInfoFilter.add(info);
+                listRestaurantInfo.add(info);
+                listRestaurantImage.add(new ArrayList<Bitmap>());
+                listRestaurantImageFilter.add(new ArrayList<Bitmap>());
+                listRestaurantComent.add(new ArrayList<String[]>());
+                listRestaurantComentFilter.add(new ArrayList<String[]>());//Talvez borrar
+                listRestaurantCaliFilter.add(new ArrayList<String[]>());
+                listRestaurantCali.add(new ArrayList<String[]>());
+                double dir[] = {restaurants.getJSONObject(i).getDouble("latitudrest"),restaurants.getJSONObject(i).getDouble("longitudrest")};
+                listRestaurantDir.add(dir);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertComent(){
+        try {
+            Log.i("GER","nombre2");
+
+            JSONArray comentarios = jsonComentarios.getJSONArray("comentarios");
+            for (int i = 0; i < comentarios.length(); i++) {
+                String email = comentarios.getJSONObject(i).getString("correousuario");
+                Log.i("GER",users.toString());
+                String name = "";
+                for (int m = 0; m < users.size(); i++) {
+                    if(users.get(m)[1].equalsIgnoreCase(email)){
+                        name =  users.get(m)[0];
+                        break;
+                    }
+                }
+                String infoComent[] = {name,
+                        comentarios.getJSONObject(i).getString("fecha"),
+                        comentarios.getJSONObject(i).getString("cuerpo_comentario"), email};
+                String nameRes = comentarios.getJSONObject(i).getString("restaurante");
+                for (int j = 0; j < listRestaurantInfo.size(); j++) {
+                    Log.i("Verif",nameRes);
+                    if(nameRes.equalsIgnoreCase(listRestaurantInfo.get(j)[0])){
+                        listRestaurantComent.get(j).add(infoComent);
+                        listRestaurantComentFilter.get(j).add(infoComent);//Talvez borrar
+                        break;
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertCalif(){
+        try {
+            JSONArray calif = jsonCalif.getJSONArray("calificaciones");
+            for (int i = 0; i < calif.length(); i++) {
+                Float calUs = Float.parseFloat(calif.getJSONObject(i).getString("cali"));
+                String nameRes = calif.getJSONObject(i).getString("restaurante");
+                String email = calif.getJSONObject(i).getString("correousuario");
+                String name = "";
+                for (int m = 0; m < users.size(); i++) {
+                    if(users.get(m)[1].equalsIgnoreCase(email)){
+                        name =  users.get(m)[0];
+                        break;
+                    }
+                }
+                String datos[] = {name, calUs+"",email};
+                for (int j = 0; j < listRestaurantInfo.size(); j++) {
+                    if(nameRes.equalsIgnoreCase(listRestaurantInfo.get(j)[0])){
+                        int cant = Integer.parseInt(listRestaurantInfo.get(j)[6]) + 1;
+                        listRestaurantInfo.get(j)[6] = cant +"";
+                        listRestaurantInfoFilter.get(j)[6] = cant +"";
+                        float caliTotal = Float.parseFloat(listRestaurantInfo.get(i)[7]) + calUs;
+                        listRestaurantInfo.get(j)[7] = caliTotal+"";
+                        listRestaurantInfoFilter.get(j)[7] = caliTotal+"";
+                        listRestaurantCali.get(j).add(datos);
+                        listRestaurantCaliFilter.get(j).add(datos);
+                        break;
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void requestData(String url) {
@@ -379,16 +599,33 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(String result) {
             try {
                 //We need to convert the string in result to a JSONObject
-                JSONObject jsonObject = new JSONObject(result);
+                if(jsonRestaurants == null){
+                    jsonRestaurants = new JSONObject(result);
+                    Log.i("yoooooo", "onPostExecute: " + jsonRestaurants.toString());
+                    insertRestaurant();
+                }
+                else if(jsonComentarios == null){
+                    Toast.makeText(MainActivity.this,"entro",Toast.LENGTH_LONG).show();
+                    jsonComentarios = new JSONObject(result);
 
+                    Log.i("GER", "onPostExecute: " + jsonComentarios.toString());
+
+                    insertComent();
+                }
+                else {
+                    jsonCalif = new JSONObject(result);
+                    insertCalif();
+                }
                 //The “ask” value below is a field in the JSON Object that was
                 //retrieved from the BitcoinAverage API. It contains the current
                 //bitcoin price
-                Log.i("GRARDEBUG", "onPostExecute: " + jsonObject.toString());
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
     }
+
+
 }

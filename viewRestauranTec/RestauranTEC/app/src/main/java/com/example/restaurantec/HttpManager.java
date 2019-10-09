@@ -1,4 +1,6 @@
 package com.example.restaurantec;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,6 +26,7 @@ public class HttpManager {
             con.setRequestMethod(requestPackage.getMethod());
 
             if (requestPackage.getMethod().equals("POST")) {
+
                 con.setDoOutput(true);
                 OutputStreamWriter writer =
                         new OutputStreamWriter(con.getOutputStream());

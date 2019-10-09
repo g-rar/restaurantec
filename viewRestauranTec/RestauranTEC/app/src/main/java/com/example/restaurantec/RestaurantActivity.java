@@ -2,7 +2,6 @@ package com.example.restaurantec;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,12 +13,12 @@ import android.icu.text.SimpleDateFormat;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.Rating;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,8 +28,6 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,21 +37,22 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.restaurantec.ui.main.ListFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.Manifest.permission_group.CAMERA;
 
 public class RestaurantActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -74,6 +72,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     private String nameS;
     private LatLng locationRest;
     private int pos;
+    private boolean isExist;
 
     @SuppressLint("ResourceType")
     @Override
@@ -86,11 +85,38 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
         final RatingBar ratingBar = findViewById(R.id.ratingRestaurant);
-
+        isExist = false;
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                Toast.makeText(RestaurantActivity.this,""+v,Toast.LENGTH_LONG).show();
+                if(!isExist) {
+                    Toast.makeText(RestaurantActivity.this, "" + v, Toast.LENGTH_LONG).show();
+                    String[] calificacion = {MainActivity.user[1], "" + v,MainActivity.user[0]};
+                    MainActivity.listRestaurantCaliFilter.get(pos).add(calificacion);
+                    int total = Integer.parseInt(MainActivity.listRestaurantInfoFilter.get(pos)[6]) + 1;
+                    float cal = Float.parseFloat(MainActivity.listRestaurantInfoFilter.get(pos)[7]) + v;
+                    float calTotal = cal / total;
+                    MainActivity.listRestaurantInfoFilter.get(pos)[5] = calTotal + "";
+                    RatingBar rating = findViewById(R.id.ratingRestaurantP);
+                    rating.setRating(Float.parseFloat(MainActivity.listRestaurantInfoFilter.get(pos)[5]));
+                    for (int i = 0; i < MainActivity.listRestaurantInfoFilter.size(); i++) {
+                        if (MainActivity.listRestaurantInfo.get(i)[0].equalsIgnoreCase(MainActivity.listRestaurantInfoFilter.get(pos)[0])) {
+                            MainActivity.listRestaurantInfo.get(i)[5] = MainActivity.listRestaurantInfoFilter.get(pos)[5];
+                            MainActivity.listRestaurantInfo.get(i)[6] = MainActivity.listRestaurantInfoFilter.get(pos)[6];
+                            MainActivity.listRestaurantInfo.get(i)[7] = MainActivity.listRestaurantInfoFilter.get(pos)[7];
+                            break;
+                        }
+                    }
+                    ListFragment.listRestaurant.get(pos)[1] = calTotal + "";
+                    ListFragment.adapterList.notifyDataSetChanged();
+                    for (int i = 0; i < MainActivity.listRestaurantCali.size(); i++) {
+                        if (MainActivity.listRestaurantInfo.get(i)[0].equalsIgnoreCase(MainActivity.listRestaurantInfoFilter.get(pos)[0])) {
+                            MainActivity.listRestaurantCali.get(i).add(calificacion);
+                            break;
+                        }
+                    }
+                    ratingBar.setIsIndicator(true);
+                }
             }
         });
         svRest = findViewById(R.id.scrollRestaurant);
@@ -117,17 +143,17 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
 
             ImageView imgPrecio = findViewById(R.id.imgPrecio);
 
-            locationRest = new LatLng(MainActivity.listRestarantDirFilter.get(pos)[0], MainActivity.listRestarantDirFilter.get(pos)[1]);
+            locationRest = new LatLng(MainActivity.listRestaurantDirFilter.get(pos)[0], MainActivity.listRestaurantDirFilter.get(pos)[1]);
 
             switch(MainActivity.listRestaurantInfoFilter.get(pos)[4])
             {
-                case "0":
+                case "S":
                     imgPrecio.setImageResource(R.drawable.dollar1);
                     break;
-                case "1":
+                case "SS":
                     imgPrecio.setImageResource(R.drawable.dollar2);
                     break;
-                case "2":
+                case "SSS":
                     imgPrecio.setImageResource(R.drawable.dollar3);
                     break;
             }
@@ -138,9 +164,21 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         listComent = new ArrayList<String[]>();
         adapterList = new AdapterComentList(this, listComent);
         listComentRestaurant.setAdapter(adapterList);
-        //String[] lista = {"Adrian","20/01/1998","Este comentario es de prueba y es que no sabia que poner pero bueno yo que se me gusta el melon."};
-        //listComent.add(lista);
-       // adapterList.notifyDataSetChanged();
+
+        for (int i = 0; i < MainActivity.listRestaurantComentFilter.get(pos).size() ; i++) {
+            listComent.add(MainActivity.listRestaurantComentFilter.get(pos).get(i));
+        }
+
+        for (int i = 0; i < MainActivity.listRestaurantCaliFilter.get(pos).size(); i++) {
+            if(MainActivity.listRestaurantCaliFilter.get(pos).get(i)[0].equalsIgnoreCase(MainActivity.user[1])){
+                isExist = true;
+                ratingBar.setRating(Float.parseFloat(MainActivity.listRestaurantCaliFilter.get(pos).get(i)[1]));
+                ratingBar.setIsIndicator(true);
+                break;
+            }
+        }
+
+        adapterList.notifyDataSetChanged();
 
         mRlView = findViewById(R.id.relativeRestaurant);
         myRequestStoragePermission();
@@ -369,11 +407,39 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         String comentS = coment.getText().toString();
         if(!comentS.isEmpty()){
             String currentDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-            String[] lista = {MainActivity.user[1],currentDate,comentS};
+            String[] lista = {MainActivity.user[1],currentDate,comentS,MainActivity.user[0]};
             listComent.add(lista);
             adapterList.notifyDataSetChanged();
+            for(int i = 0; i < MainActivity.listRestaurantInfo.size(); i++){
+                boolean isElement = MainActivity.listRestaurantInfo.get(i)[0] == MainActivity.listRestaurantInfoFilter.get(pos)[0]
+                        && MainActivity.listRestaurantInfo.get(i)[1] == MainActivity.listRestaurantInfoFilter.get(pos)[1]
+                        && MainActivity.listRestaurantInfo.get(i)[2] == MainActivity.listRestaurantInfoFilter.get(pos)[2]
+                        && MainActivity.listRestaurantInfo.get(i)[3] == MainActivity.listRestaurantInfoFilter.get(pos)[3]
+                        && MainActivity.listRestaurantInfo.get(i)[4] == MainActivity.listRestaurantInfoFilter.get(pos)[4]
+                        && MainActivity.listRestaurantInfo.get(i)[5] == MainActivity.listRestaurantInfoFilter.get(pos)[5];
+                if(isElement){
+                    MainActivity.listRestaurantComent.get(i).add(lista);
+                    break;
+                }
+            }
+            coment.setText("");
         }
         else
             Toast.makeText(this,"Escriba el comentario", Toast.LENGTH_LONG).show();
+    }
+
+    private void a(String[] pLista){
+        JSONObject restaurant = new JSONObject();
+        try {
+            restaurant.put("nombrerest",pLista[0]);
+            /*restaurant.put("latitudrest",pDir[0]);
+            restaurant.put("longitudrest",pDir[1]);
+            restaurant.put("tiporest",pInfo[3]);
+            restaurant.put("calificacionrest",0);
+            restaurant.put("preciorest",pInfo[4]);
+            restaurant.put("numtelefono",pInfo[1]);*/
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
