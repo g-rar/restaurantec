@@ -40,6 +40,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -311,13 +314,13 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
             String precio = "";
             switch (select){
                 case R.id.rbutton1:
-                    precio = "0";
+                    precio = "S";
                     break;
                 case R.id.rbutton2:
-                    precio = "1";
+                    precio = "SS";
                     break;
                 case R.id.rbutton3:
-                    precio = "2";
+                    precio = "SSS";
                     break;
             }
             String[] info = {name,phone,horario,food,precio,"0","0","0"};
@@ -333,5 +336,21 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
         }
         else
             Toast.makeText(this,"Complete todo lo solicitado",Toast.LENGTH_LONG).show();
+    }
+
+    private void a(String[] pInfo, double[] pDir){
+        JSONObject restaurant = new JSONObject();
+        try {
+            restaurant.put("nombrerest",pInfo[0]);
+            restaurant.put("latitudrest",pDir[0]);
+            restaurant.put("longitudrest",pDir[1]);
+            restaurant.put("tiporest",pInfo[3]);
+            restaurant.put("calificacionrest",0);
+            restaurant.put("preciorest",pInfo[4]);
+            restaurant.put("numtelefono",pInfo[1]);
+            restaurant.put("horario",pInfo[2]);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

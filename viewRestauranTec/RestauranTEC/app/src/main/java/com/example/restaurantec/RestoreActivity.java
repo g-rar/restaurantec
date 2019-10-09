@@ -48,23 +48,22 @@ public class RestoreActivity extends AppCompatActivity {
         if(email.contains("@gmail")){
             for (int i = 0; i < users.size(); i++) {
                 if(users.get(i)[1].equalsIgnoreCase(email)){
-
+                    sendEmail("Adri98.1mm@gmail.com",email,"smtp.googlemail.com",users.get(i)[2]);
+                    notify.setText("Se ha enviado un correo con la contraseña.");
                     return;
                 }
             }
-            sendEmail("Adri98.1mm@gmail.com",email,"smtp.googlemail.com");
-            notify.setText("Se ha enviado un correo con la contraseña.");
             Toast.makeText(this, "No hay ninguna cuenta asociada.", Toast.LENGTH_LONG).show();
         }
         else if(email.contains("@hotmail") || email.contains("@outlook")){
             for (int i = 0; i < users.size(); i++) {
                 if(users.get(i)[1].equalsIgnoreCase(email)){
                     //users.get(i)[2]
+                    sendEmail("adri-98.1@hotmail.com",email,"smtp.live.com",users.get(i)[2]);
+                    notify.setText("Se ha enviado un correo con la contraseña.");
                     return;
                 }
             }
-            sendEmail("adri-98.1@hotmail.com",email,"smtp.live.com");
-            notify.setText("Se ha enviado un correo con la contraseña.");
             Toast.makeText(this, "No hay ninguna cuenta asociada.", Toast.LENGTH_LONG).show();
         }
         else{
@@ -73,7 +72,7 @@ public class RestoreActivity extends AppCompatActivity {
         }
     }
 
-    private void sendEmail(String pEmail, String pEmailRes, String pType) throws MessagingException {
+    private void sendEmail(String pEmail, String pEmailRes, String pType, String pass) throws MessagingException {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         Properties properties = new Properties();
@@ -95,7 +94,7 @@ public class RestoreActivity extends AppCompatActivity {
             message.setFrom(new InternetAddress(pEmail));
             message.setSubject("Recuperación de contraseña Restaurantec");
             message.setRecipients(javax.mail.Message.RecipientType.TO, InternetAddress.parse(pEmailRes));//"melinamonserrat2010@hotmail.com"
-            message.setContent("Yo tenia un sueño era pequeño pero era un sueño. Les voy a contar la mejor historia de sus vidas asi que les pido que se preparen y ajusten sus cinturones por que lo que van a leer no tendra ni inicio ni fin gracias los quiero.","text/html; charset=utf-8");
+            message.setContent(pass,"text/html; charset=utf-8");
             Transport transport = session.getTransport("smtp");
             transport.connect(pType,pEmail,"258456159357268a");
             transport.sendMessage(message,message.getAllRecipients());

@@ -41,6 +41,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -76,6 +77,10 @@ public class MainActivity extends AppCompatActivity
     public static ArrayList<double[]> listRestaurantDirFilter;
     public static String[] user;
     public static boolean touchMap;
+    private ArrayList<String[]> users;
+    private JSONObject jsonRestaurants;
+    private JSONObject jsonComentarios;
+    private JSONObject jsonCalif;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,10 +187,12 @@ public class MainActivity extends AppCompatActivity
 
         touchMap = false;
 
-        requestData("https://serene-anchorage-77141.herokuapp.com/usuarios/2.json");
+        users = LoginActivity.users;
+
         requestData("https://serene-anchorage-77141.herokuapp.com/restaurantes.json");
-        requestData("https://serene-anchorage-77141.herokuapp.com/restaurantes/PintoHouse.json");
         requestData("https://serene-anchorage-77141.herokuapp.com/comentarios.json");
+
+        requestData("https://serene-anchorage-77141.herokuapp.com/calificaciones.json");
     }
 
     private void selectItem(int type){
@@ -335,13 +342,13 @@ public class MainActivity extends AppCompatActivity
                     String precio = "";
                     switch (selectRadio) {
                         case R.id.radioButton1:
-                            precio = "0";
+                            precio = "S";
                             break;
                         case R.id.radioButton2:
-                            precio = "1";
+                            precio = "SS";
                             break;
                         case R.id.radioButton3:
-                            precio = "2";
+                            precio = "SSS";
                             break;
                     }
 
@@ -477,6 +484,99 @@ public class MainActivity extends AppCompatActivity
         MapaFragment.addPointers();
     }
 
+    private void insertRestaurant(){
+        try {
+            JSONArray restaurants = jsonRestaurants.getJSONArray("restaurantes");
+
+            for (int i = 0; i < restaurants.length(); i++) {
+                String info[] = {restaurants.getJSONObject(i).getString("nombrerest"),
+                        restaurants.getJSONObject(i).getString("numtelefono"),
+                        restaurants.getJSONObject(i).getString("horario"),
+                        restaurants.getJSONObject(i).getString("tiporest"),
+                        restaurants.getJSONObject(i).getString("preciorest"),restaurants.getJSONObject(i).getString("calificacionrest"),"0","0"};
+                listRestaurantInfoFilter.add(info);
+                listRestaurantInfo.add(info);
+                listRestaurantImage.add(new ArrayList<Bitmap>());
+                listRestaurantImageFilter.add(new ArrayList<Bitmap>());
+                listRestaurantComent.add(new ArrayList<String[]>());
+                listRestaurantComentFilter.add(new ArrayList<String[]>());//Talvez borrar
+                listRestaurantCaliFilter.add(new ArrayList<String[]>());
+                listRestaurantCali.add(new ArrayList<String[]>());
+                double dir[] = {restaurants.getJSONObject(i).getDouble("latitudrest"),restaurants.getJSONObject(i).getDouble("longitudrest")};
+                listRestaurantDir.add(dir);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertComent(){
+        try {
+            Log.i("GER","nombre2");
+
+            JSONArray comentarios = jsonComentarios.getJSONArray("comentarios");
+            for (int i = 0; i < comentarios.length(); i++) {
+                String email = comentarios.getJSONObject(i).getString("correousuario");
+                Log.i("GER",users.toString());
+                String name = "";
+                for (int m = 0; m < users.size(); i++) {
+                    if(users.get(m)[1].equalsIgnoreCase(email)){
+                        name =  users.get(m)[0];
+                        break;
+                    }
+                }
+                String infoComent[] = {name,
+                        comentarios.getJSONObject(i).getString("fecha"),
+                        comentarios.getJSONObject(i).getString("cuerpo_comentario"), email};
+                String nameRes = comentarios.getJSONObject(i).getString("restaurante");
+                for (int j = 0; j < listRestaurantInfo.size(); j++) {
+                    Log.i("Verif",nameRes);
+                    if(nameRes.equalsIgnoreCase(listRestaurantInfo.get(j)[0])){
+                        listRestaurantComent.get(j).add(infoComent);
+                        listRestaurantComentFilter.get(j).add(infoComent);//Talvez borrar
+                        break;
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertCalif(){
+        try {
+            JSONArray calif = jsonCalif.getJSONArray("calificaciones");
+            for (int i = 0; i < calif.length(); i++) {
+                Float calUs = Float.parseFloat(calif.getJSONObject(i).getString("cali"));
+                String nameRes = calif.getJSONObject(i).getString("restaurante");
+                String email = calif.getJSONObject(i).getString("correousuario");
+                String name = "";
+                for (int m = 0; m < users.size(); i++) {
+                    if(users.get(m)[1].equalsIgnoreCase(email)){
+                        name =  users.get(m)[0];
+                        break;
+                    }
+                }
+                String datos[] = {name, calUs+"",email};
+                for (int j = 0; j < listRestaurantInfo.size(); j++) {
+                    if(nameRes.equalsIgnoreCase(listRestaurantInfo.get(j)[0])){
+                        int cant = Integer.parseInt(listRestaurantInfo.get(j)[6]) + 1;
+                        listRestaurantInfo.get(j)[6] = cant +"";
+                        listRestaurantInfoFilter.get(j)[6] = cant +"";
+                        float caliTotal = Float.parseFloat(listRestaurantInfo.get(i)[7]) + calUs;
+                        listRestaurantInfo.get(j)[7] = caliTotal+"";
+                        listRestaurantInfoFilter.get(j)[7] = caliTotal+"";
+                        listRestaurantCali.get(j).add(datos);
+                        listRestaurantCaliFilter.get(j).add(datos);
+                        break;
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void requestData(String url) {
         RequestPackage requestPackage = new RequestPackage();
         requestPackage.setMethod("GET");
@@ -500,16 +600,32 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(String result) {
             try {
                 //We need to convert the string in result to a JSONObject
-                JSONObject jsonObject = new JSONObject(result);
+                if(jsonRestaurants == null){
+                    jsonRestaurants = new JSONObject(result);
+                    insertRestaurant();
+                }
+                else if(jsonComentarios == null){
+                    Toast.makeText(MainActivity.this,"entro",Toast.LENGTH_LONG).show();
+                    jsonComentarios = new JSONObject(result);
 
+                    Log.i("GER", "onPostExecute: " + jsonComentarios.toString());
+
+                    insertComent();
+                }
+                else {
+                    jsonCalif = new JSONObject(result);
+                    insertCalif();
+                }
                 //The “ask” value below is a field in the JSON Object that was
                 //retrieved from the BitcoinAverage API. It contains the current
                 //bitcoin price
-                Log.i("GRARDEBUG", "onPostExecute: " + jsonObject.toString());
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
     }
+
+
 }

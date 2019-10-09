@@ -81,6 +81,7 @@ public class MapaFragment extends Fragment  implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         getLocation();
+        MainActivity.reset();
     }
 
     private void getLocation(){

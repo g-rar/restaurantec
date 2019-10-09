@@ -45,6 +45,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
@@ -88,7 +91,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
                 if(!isExist) {
                     Toast.makeText(RestaurantActivity.this, "" + v, Toast.LENGTH_LONG).show();
-                    String[] calificacion = {MainActivity.user[1], "" + v};
+                    String[] calificacion = {MainActivity.user[1], "" + v,MainActivity.user[0]};
                     MainActivity.listRestaurantCaliFilter.get(pos).add(calificacion);
                     int total = Integer.parseInt(MainActivity.listRestaurantInfoFilter.get(pos)[6]) + 1;
                     float cal = Float.parseFloat(MainActivity.listRestaurantInfoFilter.get(pos)[7]) + v;
@@ -144,13 +147,13 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
 
             switch(MainActivity.listRestaurantInfoFilter.get(pos)[4])
             {
-                case "0":
+                case "S":
                     imgPrecio.setImageResource(R.drawable.dollar1);
                     break;
-                case "1":
+                case "SS":
                     imgPrecio.setImageResource(R.drawable.dollar2);
                     break;
-                case "2":
+                case "SSS":
                     imgPrecio.setImageResource(R.drawable.dollar3);
                     break;
             }
@@ -404,7 +407,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         String comentS = coment.getText().toString();
         if(!comentS.isEmpty()){
             String currentDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-            String[] lista = {MainActivity.user[1],currentDate,comentS};
+            String[] lista = {MainActivity.user[1],currentDate,comentS,MainActivity.user[0]};
             listComent.add(lista);
             adapterList.notifyDataSetChanged();
             for(int i = 0; i < MainActivity.listRestaurantInfo.size(); i++){
@@ -423,5 +426,20 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         }
         else
             Toast.makeText(this,"Escriba el comentario", Toast.LENGTH_LONG).show();
+    }
+
+    private void a(String[] pLista){
+        JSONObject restaurant = new JSONObject();
+        try {
+            restaurant.put("nombrerest",pLista[0]);
+            /*restaurant.put("latitudrest",pDir[0]);
+            restaurant.put("longitudrest",pDir[1]);
+            restaurant.put("tiporest",pInfo[3]);
+            restaurant.put("calificacionrest",0);
+            restaurant.put("preciorest",pInfo[4]);
+            restaurant.put("numtelefono",pInfo[1]);*/
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

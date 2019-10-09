@@ -43,8 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText txtPass;
     int request_code = 1;
     private CallbackManager callbackManager;
-    private ArrayList<String[]> users;
+    public static ArrayList<String[]> users;
     public static boolean register;
+    private JSONObject jsonObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                     intent.putExtra("facebook", "False");
                     intent.putExtra("email",email);
                     intent.putExtra("name",users.get(i)[0]);
+                    intent.putExtra("Users", users);
                     startActivity(intent);
                 }
             }
@@ -186,6 +188,8 @@ public class LoginActivity extends AppCompatActivity {
             {
                 try {
                     componentEnabled(false);
+
+                    Log.i("GEREE",users.toString());
                     String first_name = object.getString("first_name");
                     String last_name = object.getString("last_name");
                     String email = object.getString("email");
@@ -209,6 +213,7 @@ public class LoginActivity extends AppCompatActivity {
                         intent.putExtra("email",email);
                         intent.putExtra("facebook","True");
                         intent.putExtra("image", image_url);
+                        intent.putExtra("Users", users);
                         startActivityForResult(intent, request_code);
                         return;
                     }
@@ -222,12 +227,13 @@ public class LoginActivity extends AppCompatActivity {
                         intent.putExtra("email", email);
                         intent.putExtra("facebook", "True");
                         intent.putExtra("image", image_url);
+                        intent.putExtra("Users", users);
                         startActivityForResult(intent, request_code);
                         // return;
                         //}
                         //}
                     }
-                    Toast.makeText(LoginActivity.this,"El usuario no esta registrado", Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(LoginActivity.this,"El usuario no esta registrado", Toast.LENGTH_LONG).show();
 
 
                 } catch (JSONException e) {
@@ -297,7 +303,7 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             try {
                 //We need to convert the string in result to a JSONObject
-                JSONObject jsonObject = new JSONObject(result);
+                jsonObject = new JSONObject(result);
                 JSONArray userJsonArray = jsonObject.getJSONArray("usuarios");
                 for(int i = 0; i < userJsonArray.length(); i++){
                     String userC[] = new String[3];
