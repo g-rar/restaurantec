@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -163,7 +164,6 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
 
         for (int i = 0; i < MainActivity.listRestaurantComentFilter.get(pos).size() ; i++) {
             listComent.add(MainActivity.listRestaurantComentFilter.get(pos).get(i));
-
         }
 
         for (int i = 0; i < MainActivity.listRestaurantCaliFilter.get(pos).size(); i++) {
@@ -407,7 +407,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
             String[] lista = {MainActivity.user[1],currentDate,comentS};
             listComent.add(lista);
             adapterList.notifyDataSetChanged();
-            for(int i = 0; i < MainActivity.listRestaurantImage.size(); i++){
+            for(int i = 0; i < MainActivity.listRestaurantInfo.size(); i++){
                 boolean isElement = MainActivity.listRestaurantInfo.get(i)[0] == MainActivity.listRestaurantInfoFilter.get(pos)[0]
                         && MainActivity.listRestaurantInfo.get(i)[1] == MainActivity.listRestaurantInfoFilter.get(pos)[1]
                         && MainActivity.listRestaurantInfo.get(i)[2] == MainActivity.listRestaurantInfoFilter.get(pos)[2]
@@ -419,7 +419,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
                     break;
                 }
             }
-            MainActivity.listRestaurantComentFilter.get(pos).add(lista);
+            coment.setText("");
         }
         else
             Toast.makeText(this,"Escriba el comentario", Toast.LENGTH_LONG).show();
