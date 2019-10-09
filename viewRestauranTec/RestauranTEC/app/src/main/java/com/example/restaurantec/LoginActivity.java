@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -17,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -33,21 +33,18 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class LoginActivity extends AppCompatActivity {
 
-    public LoginButton loginButton;
-    private CircleImageView circleImageView;
+    public static LoginButton loginButton;
     private EditText txtEmail;
     private EditText txtPass;
     int request_code = 1;
     private CallbackManager callbackManager;
     private ArrayList<String[]> users;
+    public static boolean register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult)
             {
+
             }
 
             @Override
@@ -85,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         users = new ArrayList<String[]>();
         requestData("https://serene-anchorage-77141.herokuapp.com/usuarios.json");
+        register = false;
     }
 
     private void componentEnabled(boolean enabled){
@@ -137,11 +136,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public void register(View view){
         Intent intent = new Intent(this, RegisterActivity.class);
+        intent.putExtra("Users", users);
         startActivity(intent);
     }
 
     public void restore(View view){
         Intent intent = new Intent(this, RestoreActivity.class);
+        intent.putExtra("Users", users);
         startActivity(intent);
     }
 
@@ -184,24 +185,54 @@ public class LoginActivity extends AppCompatActivity {
             public void onCompleted(JSONObject object, GraphResponse response)
             {
                 try {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    componentEnabled(false);
                     String first_name = object.getString("first_name");
                     String last_name = object.getString("last_name");
                     String email = object.getString("email");
                     String id = object.getString("id");
                     String image_url = "https://graph.facebook.com/"+id+ "/picture?type=normal";
-                    RequestOptions requestOptions = new RequestOptions();
-                    requestOptions.dontAnimate();
-                    intent.putExtra("name", first_name+" "+last_name);
-                    intent.putExtra("email",email);
-                    intent.putExtra("facebook","True");
-                    intent.putExtra("image", image_url);
-                    startActivityForResult(intent, request_code);
+                    if(register){
+                        for (int i = 0; i < users.size(); i++) {
+                            if(users.get(i)[1].equalsIgnoreCase(email)){
+                                Toast.makeText(LoginActivity.this, "El usuario ya esta registrado.", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                                intent.putExtra("Users", users);
+                                startActivity(intent);
+                                register = false;
+                                return;
+                            }
+                        }
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        RequestOptions requestOptions = new RequestOptions();
+                        requestOptions.dontAnimate();
+                        intent.putExtra("name", first_name+" "+last_name);
+                        intent.putExtra("email",email);
+                        intent.putExtra("facebook","True");
+                        intent.putExtra("image", image_url);
+                        startActivityForResult(intent, request_code);
+                        return;
+                    }
+                    else {
+                        // for(int i = 0; i < users.size(); i++){
+                        // if(users.get(i)[1].equalsIgnoreCase(email)){
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        RequestOptions requestOptions = new RequestOptions();
+                        requestOptions.dontAnimate();
+                        intent.putExtra("name", first_name + " " + last_name);
+                        intent.putExtra("email", email);
+                        intent.putExtra("facebook", "True");
+                        intent.putExtra("image", image_url);
+                        startActivityForResult(intent, request_code);
+                        // return;
+                        //}
+                        //}
+                    }
+                    Toast.makeText(LoginActivity.this,"El usuario no esta registrado", Toast.LENGTH_LONG).show();
 
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(LoginActivity.this,"no se logro", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this,"No se logro", Toast.LENGTH_LONG).show();
                 }
 
             }

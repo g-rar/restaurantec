@@ -1,6 +1,5 @@
 package com.example.restaurantec;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,7 +25,6 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -41,7 +39,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -153,6 +150,7 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng point) {
+                    RestaurantAddActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                     mMap.clear();
                     mMap.addMarker(new MarkerOptions().position(point));
                     locationRestaurant = new double[2];
@@ -324,8 +322,9 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
             }
             String[] info = {name,phone,horario,food,precio,"2.5"};
             MainActivity.listRestaurantInfo.add(info);
-            MainActivity.listRestarantDir.add(locationRestaurant);
+            MainActivity.listRestaurantDir.add(locationRestaurant);
             String[] list = {name,"2.5",food};
+            MainActivity.listRestaurantComent.add(new ArrayList<String[]>());
             ListFragment.listRestaurant.add(list);
             ListFragment.adapterList.notifyDataSetChanged();
             MainActivity.reset();

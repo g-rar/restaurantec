@@ -2,7 +2,6 @@ package com.example.restaurantec;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,7 +13,6 @@ import android.icu.text.SimpleDateFormat;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.Rating;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,8 +27,6 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,16 +41,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.Manifest.permission_group.CAMERA;
 
 public class RestaurantActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -91,6 +84,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
                 Toast.makeText(RestaurantActivity.this,""+v,Toast.LENGTH_LONG).show();
+                ratingBar.setIsIndicator(true);
             }
         });
         svRest = findViewById(R.id.scrollRestaurant);
@@ -117,7 +111,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
 
             ImageView imgPrecio = findViewById(R.id.imgPrecio);
 
-            locationRest = new LatLng(MainActivity.listRestarantDirFilter.get(pos)[0], MainActivity.listRestarantDirFilter.get(pos)[1]);
+            locationRest = new LatLng(MainActivity.listRestaurantDirFilter.get(pos)[0], MainActivity.listRestaurantDirFilter.get(pos)[1]);
 
             switch(MainActivity.listRestaurantInfoFilter.get(pos)[4])
             {
@@ -138,9 +132,11 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         listComent = new ArrayList<String[]>();
         adapterList = new AdapterComentList(this, listComent);
         listComentRestaurant.setAdapter(adapterList);
-        //String[] lista = {"Adrian","20/01/1998","Este comentario es de prueba y es que no sabia que poner pero bueno yo que se me gusta el melon."};
-        //listComent.add(lista);
-       // adapterList.notifyDataSetChanged();
+
+        for (int i = 0; i < MainActivity.listRestaurantComentFilter.get(pos).size() ; i++) {
+            listComent.add(MainActivity.listRestaurantComentFilter.get(pos).get(i));
+        }
+        adapterList.notifyDataSetChanged();
 
         mRlView = findViewById(R.id.relativeRestaurant);
         myRequestStoragePermission();
@@ -372,6 +368,19 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
             String[] lista = {MainActivity.user[1],currentDate,comentS};
             listComent.add(lista);
             adapterList.notifyDataSetChanged();
+            for(int i = 0; i < MainActivity.listRestaurantImage.size(); i++){
+                boolean isElement = MainActivity.listRestaurantInfo.get(i)[0] == MainActivity.listRestaurantInfoFilter.get(pos)[0]
+                        && MainActivity.listRestaurantInfo.get(i)[1] == MainActivity.listRestaurantInfoFilter.get(pos)[1]
+                        && MainActivity.listRestaurantInfo.get(i)[2] == MainActivity.listRestaurantInfoFilter.get(pos)[2]
+                        && MainActivity.listRestaurantInfo.get(i)[3] == MainActivity.listRestaurantInfoFilter.get(pos)[3]
+                        && MainActivity.listRestaurantInfo.get(i)[4] == MainActivity.listRestaurantInfoFilter.get(pos)[4]
+                        && MainActivity.listRestaurantInfo.get(i)[5] == MainActivity.listRestaurantInfoFilter.get(pos)[5];
+                if(isElement){
+                    MainActivity.listRestaurantComent.get(i).add(lista);
+                    break;
+                }
+            }
+            MainActivity.listRestaurantComentFilter.get(pos).add(lista);
         }
         else
             Toast.makeText(this,"Escriba el comentario", Toast.LENGTH_LONG).show();
