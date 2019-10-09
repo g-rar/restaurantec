@@ -26,7 +26,6 @@ public class HttpManager {
             con.setRequestMethod(requestPackage.getMethod());
 
             if (requestPackage.getMethod().equals("POST")) {
-                Log.i("aaaaaaa",con.getHeaderField("status"));
 
                 con.setDoOutput(true);
                 OutputStreamWriter writer =

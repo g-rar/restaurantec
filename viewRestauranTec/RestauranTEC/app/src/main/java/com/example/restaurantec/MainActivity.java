@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity
         sp_minStars.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stars));
 
         sp_typeFood = (Spinner) findViewById(R.id.spTipoComida);
-        String[] foods = {"Rapida","Mexicana","Casera","Italiana","Sandia"};
+        String[] foods = {"Rapida","Mexicana","Casera","Pinto","Italiana","Postres","Exotica"};
         sp_typeFood.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, foods));
 
         sp_type = (Spinner) findViewById(R.id.spTipoBusqueda);
@@ -191,7 +191,6 @@ public class MainActivity extends AppCompatActivity
 
         requestData("https://serene-anchorage-77141.herokuapp.com/restaurantes.json");
         requestData("https://serene-anchorage-77141.herokuapp.com/comentarios.json");
-
         requestData("https://serene-anchorage-77141.herokuapp.com/calificaciones.json");
     }
 
@@ -602,6 +601,7 @@ public class MainActivity extends AppCompatActivity
                 //We need to convert the string in result to a JSONObject
                 if(jsonRestaurants == null){
                     jsonRestaurants = new JSONObject(result);
+                    Log.i("yoooooo", "onPostExecute: " + jsonRestaurants.toString());
                     insertRestaurant();
                 }
                 else if(jsonComentarios == null){

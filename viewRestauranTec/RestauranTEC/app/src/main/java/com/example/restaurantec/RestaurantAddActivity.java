@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -40,9 +41,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -76,7 +83,7 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
         w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         foods = findViewById(R.id.spinner);
-        String[] letra = {"Rapida","Mexicana","Casera","D","E"};
+        String[] letra = {"Rapida","Mexicana","Casera","Pinto","Italiana","Postres","Exotica"};
         foods.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, letra));
         svRestoDetail = findViewById(R.id.scrollAddRestaurant);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapAdd);
@@ -338,19 +345,5 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
             Toast.makeText(this,"Complete todo lo solicitado",Toast.LENGTH_LONG).show();
     }
 
-    private void a(String[] pInfo, double[] pDir){
-        JSONObject restaurant = new JSONObject();
-        try {
-            restaurant.put("nombrerest",pInfo[0]);
-            restaurant.put("latitudrest",pDir[0]);
-            restaurant.put("longitudrest",pDir[1]);
-            restaurant.put("tiporest",pInfo[3]);
-            restaurant.put("calificacionrest",0);
-            restaurant.put("preciorest",pInfo[4]);
-            restaurant.put("numtelefono",pInfo[1]);
-            restaurant.put("horario",pInfo[2]);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+
 }
