@@ -36,6 +36,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.restaurantec.ui.main.ListFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -67,6 +68,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     private String nameS;
     private LatLng locationRest;
     private int pos;
+    private boolean isExist;
 
     @SuppressLint("ResourceType")
     @Override
@@ -79,12 +81,38 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
                 WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
         final RatingBar ratingBar = findViewById(R.id.ratingRestaurant);
-
+        isExist = false;
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                Toast.makeText(RestaurantActivity.this,""+v,Toast.LENGTH_LONG).show();
-                ratingBar.setIsIndicator(true);
+                if(!isExist) {
+                    Toast.makeText(RestaurantActivity.this, "" + v, Toast.LENGTH_LONG).show();
+                    String[] calificacion = {MainActivity.user[1], "" + v};
+                    MainActivity.listRestaurantCaliFilter.get(pos).add(calificacion);
+                    int total = Integer.parseInt(MainActivity.listRestaurantInfoFilter.get(pos)[6]) + 1;
+                    float cal = Float.parseFloat(MainActivity.listRestaurantInfoFilter.get(pos)[7]) + v;
+                    float calTotal = cal / total;
+                    MainActivity.listRestaurantInfoFilter.get(pos)[5] = calTotal + "";
+                    RatingBar rating = findViewById(R.id.ratingRestaurantP);
+                    rating.setRating(Float.parseFloat(MainActivity.listRestaurantInfoFilter.get(pos)[5]));
+                    for (int i = 0; i < MainActivity.listRestaurantInfo.size(); i++) {
+                        if (MainActivity.listRestaurantInfo.get(i)[0].equalsIgnoreCase(MainActivity.listRestaurantInfoFilter.get(pos)[0])) {
+                            MainActivity.listRestaurantInfo.get(i)[5] = MainActivity.listRestaurantInfoFilter.get(i)[5];
+                            MainActivity.listRestaurantInfo.get(i)[6] = MainActivity.listRestaurantInfoFilter.get(i)[6];
+                            MainActivity.listRestaurantInfo.get(i)[7] = MainActivity.listRestaurantInfoFilter.get(i)[7];
+                            break;
+                        }
+                    }
+                    ListFragment.listRestaurant.get(pos)[1] = calTotal + "";
+                    ListFragment.adapterList.notifyDataSetChanged();
+                    for (int i = 0; i < MainActivity.listRestaurantCali.size(); i++) {
+                        if (MainActivity.listRestaurantInfo.get(i)[0].equalsIgnoreCase(MainActivity.listRestaurantInfoFilter.get(pos)[0])) {
+                            MainActivity.listRestaurantCali.get(i).add(calificacion);
+                            break;
+                        }
+                    }
+                    ratingBar.setIsIndicator(true);
+                }
             }
         });
         svRest = findViewById(R.id.scrollRestaurant);
@@ -135,7 +163,18 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
 
         for (int i = 0; i < MainActivity.listRestaurantComentFilter.get(pos).size() ; i++) {
             listComent.add(MainActivity.listRestaurantComentFilter.get(pos).get(i));
+
         }
+
+        for (int i = 0; i < MainActivity.listRestaurantCaliFilter.get(pos).size(); i++) {
+            if(MainActivity.listRestaurantCaliFilter.get(pos).get(i)[0].equalsIgnoreCase(MainActivity.user[1])){
+                isExist = true;
+                ratingBar.setRating(Float.parseFloat(MainActivity.listRestaurantCaliFilter.get(pos).get(i)[1]));
+                ratingBar.setIsIndicator(true);
+                break;
+            }
+        }
+
         adapterList.notifyDataSetChanged();
 
         mRlView = findViewById(R.id.relativeRestaurant);

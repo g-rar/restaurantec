@@ -320,11 +320,12 @@ public class RestaurantAddActivity extends AppCompatActivity implements OnMapRea
                     precio = "2";
                     break;
             }
-            String[] info = {name,phone,horario,food,precio,"2.5"};
+            String[] info = {name,phone,horario,food,precio,"0","0","0"};
             MainActivity.listRestaurantInfo.add(info);
             MainActivity.listRestaurantDir.add(locationRestaurant);
-            String[] list = {name,"2.5",food};
+            String[] list = {name,"0",food};
             MainActivity.listRestaurantComent.add(new ArrayList<String[]>());
+            MainActivity.listRestaurantCali.add(new ArrayList<String[]>());
             ListFragment.listRestaurant.add(list);
             ListFragment.adapterList.notifyDataSetChanged();
             MainActivity.reset();

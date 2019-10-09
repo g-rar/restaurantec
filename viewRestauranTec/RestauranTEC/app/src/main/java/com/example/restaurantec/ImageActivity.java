@@ -30,10 +30,6 @@ public class ImageActivity extends AppCompatActivity {
         }
     }
 
-    public void restorePassword(View view){
-
-    }
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);

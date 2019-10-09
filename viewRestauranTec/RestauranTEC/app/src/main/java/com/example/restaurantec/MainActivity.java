@@ -64,11 +64,13 @@ public class MainActivity extends AppCompatActivity
     private ImageView imgDollar2;
     private ImageView imgDollar3;
     public static ArrayList<ArrayList<Bitmap>> listRestaurantImage;
+    public static ArrayList<ArrayList<String[]>> listRestaurantCali;
     public static ArrayList<ArrayList<String[]>> listRestaurantComent;
     public static ArrayList<String[]> listRestaurantInfo;
     public static ArrayList<double[]> listRestaurantDir;
 
     public static ArrayList<ArrayList<Bitmap>> listRestaurantImageFilter;
+    public static ArrayList<ArrayList<String[]>> listRestaurantCaliFilter;
     public static ArrayList<ArrayList<String[]>> listRestaurantComentFilter;
     public static ArrayList<String[]> listRestaurantInfoFilter;
     public static ArrayList<double[]> listRestaurantDirFilter;
@@ -167,11 +169,13 @@ public class MainActivity extends AppCompatActivity
         });
 
         listRestaurantImage = new ArrayList<ArrayList<Bitmap>>();
+        listRestaurantCali = new ArrayList<ArrayList<String[]>>();
         listRestaurantInfo = new ArrayList<String[]>();
         listRestaurantDir = new ArrayList<double[]>();
         listRestaurantComent = new ArrayList<ArrayList<String[]>>();
 
         listRestaurantImageFilter = new ArrayList<ArrayList<Bitmap>>();
+        listRestaurantCaliFilter = new ArrayList<ArrayList<String[]>>();
         listRestaurantComentFilter = new ArrayList<ArrayList<String[]>>();
         listRestaurantInfoFilter = new ArrayList<String[]>();
         listRestaurantDirFilter = new ArrayList<double[]>();
@@ -285,6 +289,7 @@ public class MainActivity extends AppCompatActivity
         listRestaurantComentFilter = (ArrayList<ArrayList<String[]>>) listRestaurantComent.clone();
         listRestaurantInfoFilter = (ArrayList<String[]>) listRestaurantInfo.clone();
         listRestaurantDirFilter = (ArrayList<double[]>) listRestaurantDir.clone();
+        listRestaurantCaliFilter = (ArrayList<ArrayList<String[]>>) listRestaurantCali.clone();
         ListFragment.listRestaurant.clear();
         for(int i = 0; i < listRestaurantInfoFilter.size(); i++){
             String[] list = {listRestaurantInfoFilter.get(i)[0],listRestaurantInfoFilter.get(i)[5],listRestaurantInfoFilter.get(i)[3]};
@@ -307,6 +312,7 @@ public class MainActivity extends AppCompatActivity
                     listRestaurantComentFilter.clear();
                     listRestaurantInfoFilter.clear();
                     listRestaurantDirFilter.clear();
+                    listRestaurantCaliFilter.clear();
                     ListFragment.listRestaurant.clear();
                     for(int i = 0; i < listRestaurantInfo.size(); i++){
                         if(listRestaurantInfo.get(i)[0].equalsIgnoreCase(name)){
@@ -314,6 +320,7 @@ public class MainActivity extends AppCompatActivity
                             listRestaurantImageFilter.add(listRestaurantImage.get(i));
                             listRestaurantComentFilter.add(listRestaurantComent.get(i));
                             listRestaurantDirFilter.add(listRestaurantDir.get(i));
+                            listRestaurantCaliFilter.add(listRestaurantCali.get(i));
                             String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
                             ListFragment.listRestaurant.add(list);
                         }
@@ -342,6 +349,7 @@ public class MainActivity extends AppCompatActivity
                     listRestaurantComentFilter.clear();
                     listRestaurantInfoFilter.clear();
                     listRestaurantDirFilter.clear();
+                    listRestaurantCaliFilter.clear();
                     ListFragment.listRestaurant.clear();
                     for(int i = 0; i < listRestaurantInfo.size(); i++){
                         if(listRestaurantInfo.get(i)[4].equalsIgnoreCase(precio)){
@@ -349,6 +357,7 @@ public class MainActivity extends AppCompatActivity
                             listRestaurantImageFilter.add(listRestaurantImage.get(i));
                             listRestaurantComentFilter.add(listRestaurantComent.get(i));
                             listRestaurantDirFilter.add(listRestaurantDir.get(i));
+                            listRestaurantCaliFilter.add(listRestaurantCali.get(i));
                             String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
                             ListFragment.listRestaurant.add(list);
                         }
@@ -363,6 +372,7 @@ public class MainActivity extends AppCompatActivity
                 listRestaurantComentFilter.clear();
                 listRestaurantInfoFilter.clear();
                 listRestaurantDirFilter.clear();
+                listRestaurantCaliFilter.clear();
                 ListFragment.listRestaurant.clear();
                 for(int i = 0; i < listRestaurantInfo.size(); i++){
                     if(listRestaurantInfo.get(i)[3].equalsIgnoreCase(food)){
@@ -383,6 +393,7 @@ public class MainActivity extends AppCompatActivity
                     listRestaurantComentFilter.clear();
                     listRestaurantInfoFilter.clear();
                     listRestaurantDirFilter.clear();
+                    listRestaurantCaliFilter.clear();
 
                     Location myLocation = MapaFragment.mMap.getMyLocation();
                     ListFragment.listRestaurant.clear();
@@ -395,6 +406,7 @@ public class MainActivity extends AppCompatActivity
                             listRestaurantImageFilter.add(listRestaurantImage.get(i));
                             listRestaurantComentFilter.add(listRestaurantComent.get(i));
                             listRestaurantDirFilter.add(listRestaurantDir.get(i));
+                            listRestaurantCaliFilter.add(listRestaurantCali.get(i));
                             String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
                             ListFragment.listRestaurant.add(list);
                         }
@@ -411,6 +423,7 @@ public class MainActivity extends AppCompatActivity
                     listRestaurantComentFilter.clear();
                     listRestaurantInfoFilter.clear();
                     listRestaurantDirFilter.clear();
+                    listRestaurantCaliFilter.clear();
 
                     Location myLocation = new Location("punto");
                     myLocation.setLatitude(MapaFragment.pointMap.getPosition().latitude);
@@ -425,6 +438,7 @@ public class MainActivity extends AppCompatActivity
                             listRestaurantImageFilter.add(listRestaurantImage.get(i));
                             listRestaurantComentFilter.add(listRestaurantComent.get(i));
                             listRestaurantDirFilter.add(listRestaurantDir.get(i));
+                            listRestaurantCaliFilter.add(listRestaurantCali.get(i));
                             String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
                             ListFragment.listRestaurant.add(list);
                         }
@@ -441,6 +455,7 @@ public class MainActivity extends AppCompatActivity
                     listRestaurantComentFilter.clear();
                     listRestaurantInfoFilter.clear();
                     listRestaurantDirFilter.clear();
+                    listRestaurantCaliFilter.clear();
                     ListFragment.listRestaurant.clear();
                     for(int i = 0; i < listRestaurantInfo.size(); i++){
                         float stars = Float.parseFloat(listRestaurantInfo.get(i)[5]);
@@ -449,6 +464,7 @@ public class MainActivity extends AppCompatActivity
                             listRestaurantImageFilter.add(listRestaurantImage.get(i));
                             listRestaurantComentFilter.add(listRestaurantComent.get(i));
                             listRestaurantDirFilter.add(listRestaurantDir.get(i));
+                            listRestaurantCaliFilter.add(listRestaurantCali.get(i));
                             String[] list = {listRestaurantInfo.get(i)[0],listRestaurantInfo.get(i)[5],listRestaurantInfo.get(i)[3]};
                             ListFragment.listRestaurant.add(list);
                         }

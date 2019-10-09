@@ -119,13 +119,6 @@ public class MapaFragment extends Fragment  implements OnMapReadyCallback {
                 }
             });
 
-            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(Marker marker) {
-
-                }
-            });
-
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
@@ -136,7 +129,6 @@ public class MapaFragment extends Fragment  implements OnMapReadyCallback {
                             startActivity(intent);
                         }
                     }
-                    Log.i("mapa","entro");
                     return false;
                 }
             });
